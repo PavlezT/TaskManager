@@ -4,8 +4,8 @@ Server/src/main.bundle.js
 Server/src/polyfills.bundle.js
 Server/src/styles.bundle.js
 Server/src/vendor.bundle.js
-Server/logs/filelog-verbose.log
-Server/logs/filelog-info.log
-Server/logs/filelog-error.log
+Server/logs/filelog-verbose*.log
+Server/logs/filelog-info*.log
+Server/logs/filelog-error*.log
 package-lock.json
 *.DS_Store
