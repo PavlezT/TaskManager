@@ -1,0 +1,111 @@
+<div class="component-container">
+  <h2 style="color: #444; font-weight: 200;">
+    {{this.collectionName}} 
+  </h2>
+  <div class="ls-list">
+    <div class="ls-list-wrapper">
+      <div class="ls-list-table-header">
+        <div *ngIf="selectedItemsCount > 0" class="ls-list-header-info">{{ 'CollectionView.Selected' | translate}} {{ 'CollectionView.elements' | translate }}: {{ selectedItemsCount }}. <a href="javascript:void(0)" (click)="deleteSelectedItems()">{{ 'Delete' | translate }}</a> {{ 'or' | translate }} <a href="javascript:void(0)" (click)="disselectAll()">{{ 'CollectionView.undoSelected' | translate }}</a> ...</div>
+        <div *ngIf="itemEditModeActive" class="ls-list-header-info">{{ 'CollectionView.itemEditModeActive' | translate }}</div>
+        <div *ngIf="itemAddModeActive" class="ls-list-header-info">{{ 'CollectionView.itemAddModeActive' | translate }}</div>
+        <div *ngIf="searchInfo" class="ls-list-header-info">{{ 'Search' | translate }} {{ 'CollectionView.byValue' | translate }} : <span class="searchText">{{searchInfo}}</span>. <a href="javascript:void(0)" (click)="cancelSearch()">{{ 'Cancel' | translate }} {{ 'CollectionView.search' | translate }}</a></div>
+      </div>
+      <table class="ls-list-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th *ngFor="let key of collectionKeys" (click)="updateSort($event, key)">
+              {{ key }}
+              <span *ngIf="checkSort(key)!=null">
+                <mat-icon *ngIf="checkSort(key)!='asc'" class="sort-icon">arrow_upward</mat-icon>
+                <mat-icon *ngIf="checkSort(key)!='desc'" class="sort-icon">arrow_downward</mat-icon>
+              </span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="itemAddModeActive" class="new">
+            <td>
+              <div class="dropdown-link">
+                <button mat-icon-button [matMenuTriggerFor]="menu">
+                  <mat-icon>more_horiz</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item (click)="saveNewItem()">
+                    <mat-icon>save</mat-icon>
+                    <span>{{ 'Save' | translate}}</span>
+                  </button>
+                  <button mat-menu-item (click)="itemAddModeActive = false;">
+                    <mat-icon>cancel</mat-icon>
+                    <span>{{ 'Cancel' | translate}} {{ 'CollectionView.changes'| translate}}</span>
+                  </button>
+                </mat-menu>
+              </div>
+            </td>
+            <td *ngFor="let key of collectionKeys" [attr.key]="key"><div [attr.contenteditable]="true"></div></td>
+          </tr>
+          <tr *ngFor="let item of items" class="{{item.ngProps.Selected == true ? 'selected' : ''}} {{item.ngProps.Editable == true ? 'editable' : ''}}" (click)="toggleItemSelection($event, item)">
+            <td>
+              <div class="dropdown-link" (click)="onDropdownOpen($event, item)">
+                <button mat-icon-button [matMenuTriggerFor]="menu">
+                  <mat-icon>more_horiz</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                  <button *ngIf="!itemEditModeActive" mat-menu-item (click)="toggleItemEdit($event, item)">
+                    <mat-icon>edit</mat-icon>
+                    <span>{{ 'Edit' | translate }} {{ 'CollectionView.element' | translate }}</span>
+                  </button>
+                  <button *ngIf="itemEditModeActive && item.ngProps.Editable" mat-menu-item (click)="saveEditableItem()">
+                    <mat-icon>save</mat-icon>
+                    <span>{{ 'Save' | translate }}</span>
+                  </button>
+                  <button *ngIf="itemEditModeActive && item.ngProps.Editable" mat-menu-item (click)="toggleItemEdit($event, item)">
+                    <mat-icon>cancel</mat-icon>
+                    <span>{{ 'Cancel' | translate }} {{ 'CollectionView.changes' | translate }}</span>
+                  </button>
+                  <button mat-menu-item (click)="deleteItem($event, item)">
+                    <mat-icon>delete</mat-icon>
+                    <span>{{ 'Delete' | translate }} {{ 'CollectionView.element' | translate }}</span>
+                  </button>
+                </mat-menu>
+              </div>
+            </td>
+            <td *ngFor="let key of collectionKeys" [attr.key]="key"><div [attr.contenteditable]="item.ngProps.Editable">{{ item[key] != null ? item[key] : '' }}</div></td>
+          </tr>
+          <tr class="ls-list-no-items" *ngIf="((items != null) && (items.length == 0))">
+            <td style="position : absolute;">
+              <div>{{ 'NoElements' | translate }}</div>
+            </td>
+          </tr>
+          <tr *ngIf="items == null">
+            <td style="background-color:white;">
+              <div style="min-height: 140px;"></div>
+            </td>
+          </tr>
+        </tbody>
+        <div class="ls-list-actions">
+          <div class="ls-list-action" (click)="toggleItemAdd()" matTooltip="{{ 'Create' | translate }} {{ 'CollectionView.element' | translate }}" matTooltipPosition="left">
+            <mat-icon>add</mat-icon>
+          </div>
+          <div class="ls-list-action" matTooltip="{{ 'Search' | translate }}" matTooltipPosition="left" (click)="openListSearchDlg()">
+            <mat-icon>search</mat-icon>
+          </div>
+          <div class="ls-list-action" matTooltip="{{ 'Settings' | translate }}" matTooltipPosition="left">
+            <mat-icon>settings</mat-icon>
+          </div>
+        </div>
+      </table>
+      <div class="ls-list-pagination">
+        <button mat-icon-button [disabled]="pageNumber == 1" (click)="paginationChange('prev')" matTooltip="{{ 'PrevPage' | translate }}">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        <button mat-icon-button [disabled]="items == null || items.length < itemsPerPage" (click)="paginationChange('next')" matTooltip="{{ 'NextPage' | translate }}">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div class="ls-list-preloader" [@preloaderState]="preloaderVisible">
+      <mat-spinner></mat-spinner>
+    </div>
+  </div>
+</div>

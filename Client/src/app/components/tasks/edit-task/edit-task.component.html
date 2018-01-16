@@ -1,0 +1,37 @@
+<div class="edit-task-wrapper" *ngIf="userRole != null">
+    <form (submit)="onEditTaskFormSubmit($event, editTaskForm)" #editTaskForm="ngForm">
+        <mat-form-field>
+            <input matInput type="text" placeholder="{{ 'Tasks.Name' | translate }}" [(ngModel)]="model.Title" name="Title" #Title="ngModel" required [disabled]="userRole == 'assignedTo'">
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
+            <textarea matInput rows="5" placeholder="{{ 'Tasks.Description' | translate }}" [(ngModel)]="model.Description" name="Description" #Description="ngModel" [disabled]="userRole == 'assignedTo'"></textarea>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-select placeholder="{{ 'Tasks.Importance' | translate }}" [(ngModel)]="model.IsImportant" name="IsImportant" #IsImportant="ngModel" [disabled]="userRole == 'assignedTo'">
+                <mat-option value="true">{{ 'Tasks.yes' | translate }}</mat-option>
+                <mat-option value="false">{{ 'Tasks.no' | translate }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field style="padding-top: 16px;">
+            <input matInput type="text" placeholder="{{ 'Tasks.Executor' | translate }}" (change)="validatePeoplepicker($event, editTaskForm)" (keyup)="onPeoplepickerValueChange($event)" [matAutocomplete]="userAuto" [(ngModel)]="model.AssignedTo" name="AssignedTo" #AssignedTo="ngModel" required>
+            <mat-autocomplete #userAuto="matAutocomplete">
+                <mat-option *ngFor="let user of filteredUsers" [value]="user.Name">
+                    {{ user.Name }}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput type="text" placeholder="{{ 'Tasks.EndingDate' | translate }}" [matDatepicker]="dueDatePicker" [(ngModel)]="model.DueDate" name="DueDate" #DueDate="ngModel" [disabled]="userRole == 'assignedTo'">
+            <mat-datepicker-toggle matSuffix [for]="dueDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #dueDatePicker></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-select placeholder="{{ 'Tasks.Status' | translate }}" [(ngModel)]="model.Status" name="Status" #Status="ngModel" [disabled]="(userRole == 'author')&&(user._id != taskBeforeEdit.AssignedTo._docId)">
+                <mat-option value="{{config.tasksStatuses.new}}">{{ 'Tasks.New' | translate }}</mat-option>
+                <mat-option value="{{config.tasksStatuses.inprogress}}">{{ 'Tasks.InProgress' | translate }}</mat-option>
+                <mat-option value="{{config.tasksStatuses.done}}">{{ 'Tasks.Done' | translate }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <button mat-raised-button color="primary" type="submit" [disabled]="!editTaskForm.valid" style="margin-top: 15px;">{{ 'Save' | translate }}</button>
+    </form>
+</div>

@@ -1,0 +1,8 @@
+.edit-task-wrapper{
+    width: 100%;
+    padding: 20px;
+}
+.edit-task-wrapper mat-form-field,
+.edit-task-wrapper mat-select{
+    width: 100%;
+}

@@ -1,0 +1,29 @@
+<mat-sidenav-container>
+    <mat-sidenav mode="over" align="end" (close)="onTaskSidenavClose()" [opened]="tasksSidebarOpened" [ngClass]="tasksSidebarType">
+        <connectedDoc *ngIf="tasksSidebarType == 'connectedDoc'" [task]="taskInfoViewed" ></connectedDoc>
+        <work-task *ngIf="tasksSidebarType == 'info'" [task]="taskInfoViewed" [toDoneTask]="toDoneTask"></work-task>
+    </mat-sidenav>
+    <div class="component-container">
+        <!-- <quick-create-task></quick-create-task> -->
+        <div class="tasks-tabs-wrapper" >
+            <div class="task-tab" (click)="updateView(config.lsdocsStatuses.new)" ><div class="task-title">{{ 'LSDocs.NewTasks' | translate }}</div></div>
+            <div class="task-tab" (click)="updateView(config.lsdocsStatuses.inprogress)" ><div class="task-title">{{ 'LSDocs.ActiveTasks' | translate }}</div></div>
+            <div class="task-tab" (click)="updateView(config.lsdocsStatuses.done)" ><div class="task-title">{{ 'LSDocs.DoneTasks' | translate }}</div></div>
+        </div>
+        <div class="tasks-list-wrapper" [attr.width]='10' [dragula]='"categories-bag"'>
+            <div *ngFor="let task of items" class="task" (dblclick)="openSideBar(task,'info')">
+                <div class="task-checkbox-wrapper">
+                    <mat-checkbox color="primary" matTooltip="{{ 'Tasks.Execute' | translate }}" (change)="ProgressTask(task)"  [checked]="task.OData__Status == config.tasksStatuses.done" ></mat-checkbox>
+                </div>
+                <div class="task-title">{{ task.Title }}</div>
+                <div class="task-date" *ngIf="task.TaskDueDate != null">{{ task.TaskDueDate | date:'shortDate' }}</div>
+                <div class="task-importance" *ngIf="task.sysIDItem && task.sysIDList" (click)="openSideBar(task,'connectedDoc')">
+                    <mat-icon style="color:cornflowerblue ">assignment</mat-icon>
+                </div>
+            </div>
+        </div>
+        <div class="ls-list-preloader" [@preloaderState]="preloaderVisible">
+            <mat-spinner></mat-spinner>
+        </div>
+    </div>
+</mat-sidenav-container>

@@ -1,0 +1,69 @@
+mat-toolbar{
+    padding: 0;
+}
+mat-toolbar >>> mat-toolbar-row:first-child{
+    display: none;
+}
+mat-toolbar .current-user-avatar{
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    margin: 8px 16px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: grey;
+    cursor: pointer;
+    outline: none!important;
+}
+mat-toolbar .current-user-name{
+    color: #444;
+    text-decoration: none;
+    margin-top: 5px;
+    font-size: 16px;
+    outline: none!important;
+}
+mat-toolbar .current-user-name:hover{
+    color: black;
+}
+mat-toolbar .site-actions-btn{
+    margin-top: 5px;
+    transform: rotateZ(90deg);
+    color: #737373;
+}
+mat-toolbar button{
+    width: 100%;
+    height: 100%;
+    text-align: left;
+    font-size: 16px;
+    color: #565656;
+}
+mat-toolbar button mat-icon{
+    color: #565656;
+    vertical-align: middle;
+    margin-top: -5px;
+    margin-right: 10px;
+}
+mat-toolbar button .button-text{
+    line-height: 24px;
+    height: 24px;
+    display: inline-block;
+}
+mat-toolbar button .tasks-counter{
+    float: right;
+    display: inline-block;
+    margin-top: 1px;
+    color: #a6a6a6;
+    margin-right: 7px;
+}
+.tasks-active-link >>> .mat-button-focus-overlay {
+    opacity: 1;
+}
+mat-toolbar .mat-toolbar-row >>> .gu-transit,
+mat-toolbar .mat-toolbar-row >>> .task{
+    display: none;
+}
+mat-toolbar .mat-toolbar-row{
+    padding-left: 0;
+    padding-right: 0;
+}

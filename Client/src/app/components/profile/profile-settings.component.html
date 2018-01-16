@@ -1,0 +1,29 @@
+<div class="component-container">
+    <h2 style="color: #444; font-weight: 200;">
+       {{ 'Profile.Settings.SettingsProfile' | translate }}
+    </h2>
+    <div class="profile-settings-wrapper">
+        <p>{{ 'Profile.Settings.SelectBackImage' | translate }}</p>
+        <div class="pattern-preview-wrapper">
+            <div class="pattern-preview" style="background-color:#ececec;" (click)="setPreviewPattern($event, '')"></div>
+            <div class="pattern-preview" *ngFor="let patternUrl of availablePatterns" [ngStyle]="{'background-image': 'url(' + patternUrl + ')'}" (click)="setPreviewPattern($event, patternUrl)"></div>
+        </div>
+        <p style="margin-top:30px;">{{ 'Profile.Settings.EditPersonalTaskCategory' | translate }}</p>
+        <div class="task-categories-wrapper">
+            <form (submit)="onNewTaskCategoryAdd()">
+                <mat-form-field>
+                    <input matInput type="text" placeholder="{{ 'Create' | translate }} {{ 'Profile.Settings.category' | translate }}..." [(ngModel)]="newTaskCategory" name="newCategoryTitle" required>
+                </mat-form-field>
+                <button mat-icon-button type="submit">
+                    <mat-icon>done</mat-icon>
+                </button>
+            </form>
+            <mat-chip-list *ngIf="userTaskCategories != null">
+                <mat-chip *ngFor="let userTaskCategory of userTaskCategories">
+                    {{ userTaskCategory.Title }}
+                    <mat-icon (click)="deleteTaskCategory($event, userTaskCategory)">close</mat-icon>
+                </mat-chip>
+            </mat-chip-list>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,48 @@
+#app-inner-wrapper{
+    opacity: 0;
+    -webkit-transition: opacity 0.3s ease;
+    -o-transition: opacity 0.3s ease;
+    transition: opacity 0.3s ease;
+    height: 100%;    
+}
+mat-sidenav-container{
+    height: 100%;
+    background-color: #ececec;
+}
+.main-sidebar{
+    width: 300px;
+    background-color: white;
+    -webkit-box-shadow: 0px 0px 20px 3px rgba(0,0,0,0.2);
+    -moz-box-shadow: 0px 0px 20px 3px rgba(0,0,0,0.2);
+    box-shadow: 0px 0px 20px 3px rgba(0,0,0,0.2);
+    overflow: visible;
+    visibility: visible!important;
+}
+.main-sidebar-inner-wrapper{
+    position: relative;
+    height: 100%;
+}
+.main-sidebar main-sidebar{
+    position: relative;
+    overflow-x: auto;
+    overflow-y: visible;
+    height: 100%;
+    display: block;
+}
+.main-sidebar-btn{
+    position: absolute;
+    right: 0;
+    top: 10px;
+    margin-right: -44px;
+    background-color: #f5f5f5;
+    border-radius: 0 6px 6px 0;
+    cursor: pointer;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+}
+.main-sidebar-btn mat-icon{
+    margin: 10px;
+}
+.page-content{
+    width: 80%;
+    margin: 50px auto;
+}

@@ -1,0 +1,23 @@
+<div class="task new">
+    <div class="add-icon-wrapper">
+        <mat-icon>add</mat-icon>
+    </div>
+    <div class="form-wrapper">
+        <form (submit)="onNewTaskFormSubmit($event, newTaskForm)" #newTaskForm="ngForm">
+            <input type="text" placeholder="{{ 'Create' | translate }} {{'Tasks.task' | translate }}..." [(ngModel)]="model.Title" name="Title" #Title="ngModel" required>
+            <input matInput [matDatepicker]="datepicker" [(ngModel)]="model.DueDate" name="DueDate" #DueDate="ngModel" style="display:none;">
+            <mat-datepicker #datepicker touchUi="true"></mat-datepicker>
+            <div class="task-date" (click)="datepicker.open()">
+                <mat-icon>date_range</mat-icon>
+            </div>
+            <div class="task-importance" (click)="toggleTaskImportance($event)">
+                <mat-icon *ngIf="model.IsImportant == true" style="color: white;">star</mat-icon>
+                <mat-icon *ngIf="(model.IsImportant == null)||(model.IsImportant == false)">star_border</mat-icon>
+            </div>
+            <div class="task-importance-bg" *ngIf="model.IsImportant == true">
+                <img src="/src/img/importance-bg.png">
+            </div>
+            <input type="submit" style="position: absolute; left: -9999px"/>
+        </form>
+    </div>
+</div>

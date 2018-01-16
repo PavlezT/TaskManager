@@ -1,0 +1,31 @@
+<div class="create-task-wrapper">
+    <div class="form-title">{{ 'Tasks.NewTask' | translate }}</div>
+    <form (submit)="onNewTaskFormSubmit($event, newTaskForm)" #newTaskForm="ngForm">
+        <mat-form-field>
+            <input matInput type="text" placeholder="{{ 'Tasks.Name' | translate }}" [(ngModel)]="model.Title" name="Title" #Title="ngModel" required>
+        </mat-form-field>
+        <mat-form-field>
+            <textarea matInput rows="5" placeholder="{{ 'Tasks.Description' | translate }}" [(ngModel)]="model.Description" name="Description" #Description="ngModel"></textarea>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-select placeholder="{{ 'Tasks.Importance' | translate }}" [(ngModel)]="model.IsImportant" name="IsImportant" #IsImportant="ngModel">
+                <mat-option value="true">{{ 'Tasks.yes' | translate }}</mat-option>
+                <mat-option value="false">{{ 'Tasks.no' | translate }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field style="padding-top: 16px;">
+            <input matInput type="text" placeholder="{{ 'Tasks.Executor' | translate }}" (change)="validatePeoplepicker($event, newTaskForm)" (keyup)="onPeoplepickerValueChange($event)" [matAutocomplete]="userAuto" [(ngModel)]="model.AssignedTo" name="AssignedTo" #AssignedTo="ngModel" required>
+            <mat-autocomplete #userAuto="matAutocomplete">
+                <mat-option *ngFor="let user of filteredUsers" [value]="user.Name">
+                    {{ user.Name }}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput type="text" placeholder="{{ 'Tasks.EndingDate' | translate }}" [matDatepicker]="dueDatePicker" [(ngModel)]="model.DueDate" name="DueDate" #DueDate="ngModel">
+            <mat-datepicker-toggle matSuffix [for]="dueDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #dueDatePicker></mat-datepicker>
+        </mat-form-field>
+        <button mat-raised-button color="primary" type="submit" [disabled]="!newTaskForm.valid">{{ 'Create' | translate }}</button>
+    </form>
+</div>

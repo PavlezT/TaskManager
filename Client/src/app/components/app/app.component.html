@@ -1,0 +1,13 @@
+<div id="app-inner-wrapper" [ngStyle]="{'opacity':''+((masterpageIsLoaded) ? 1 : 0)+''}">
+    <mat-sidenav-container [ngStyle]="{'background':'' + ((generalService.user) ? generalService.user.SiteBg : '') + ''}">
+        <mat-sidenav class="main-sidebar" [mode]="generalService.isLargeScreen() ? 'side' : 'over'" [opened]="generalService.isLargeScreen() ? 'true' : mainSidebarOpened" (close)="mainSidebarOpened = false">
+            <div class="main-sidebar-inner-wrapper">
+                <div class="main-sidebar-btn" *ngIf="!generalService.isLargeScreen()" (click)="toggleMainSidebar()">
+                    <mat-icon>dehaze</mat-icon>
+                </div>
+                <main-sidebar></main-sidebar>
+            </div>
+        </mat-sidenav>
+        <router-outlet></router-outlet>
+    </mat-sidenav-container>
+</div>

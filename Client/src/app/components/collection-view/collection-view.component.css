@@ -1,0 +1,177 @@
+.ls-list{
+  position: relative;
+}
+.ls-list-table {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  background-color: #fff;
+  font-size: 13px;
+  padding: 1px;
+  -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+  -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+  box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+}
+.ls-list-table > thead > tr,
+.ls-list-table > tbody > tr{
+  -webkit-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+.ls-list-table > thead > tr > th,
+.ls-list-table > tbody > tr > th,
+.ls-list-table > thead > tr > td,
+.ls-list-table > tbody > tr > td{
+  text-align: left;
+  word-break: break-word;
+  padding: 6px 10px;
+  vertical-align: top;
+  border-top: 0;
+  -webkit-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+  vertical-align: middle;
+}
+.ls-list-table > thead > tr > th {
+  vertical-align: bottom;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  color: black;
+  font-weight: 600;
+  padding: 14px 10px;
+}
+.ls-list-table > thead:first-child > tr:first-child > th,
+.ls-list-table > thead:first-child > tr:first-child > td {
+  border-top: 0;
+}
+.ls-list-table > tbody > tr:hover > td,
+.ls-list-table > tbody > tr:hover > th,
+.ls-list-table > tbody > tr.selected > td,
+.ls-list-table > tbody > tr.selected > th,
+.ls-list-table > tbody > tr.editable > td,
+.ls-list-table > tbody > tr.editable > th,
+.ls-list-table > tbody > tr.new > td,
+.ls-list-table > tbody > tr.new > th{
+  background-color: #b3e5fc;
+}
+.ls-list-header-info{
+  font-size: 14px;
+  margin-bottom: 7px;
+  font-weight: 600;
+  color: black;
+}
+.dropdown-link{
+  max-width: 50px;
+  margin: 0 auto;
+  letter-spacing: 3px;
+  cursor: pointer;
+  color: transparent;
+  text-align: center;
+  -webkit-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+.ls-list-table > tbody > tr:hover > td .dropdown-link,
+.ls-list-table > tbody > tr.editable > td .dropdown-link,
+.ls-list-table > tbody > tr.new > td .dropdown-link{
+  color: #444;
+}
+.dropdown-link:hover{
+  color: black;
+}
+.sort-icon{
+  position: absolute;
+  right:0;
+  top: 9px;
+}
+.ls-list-table > thead > tr > th{
+  position: relative;
+  cursor: pointer;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.ls-list-preloader{
+  /*position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255,255,255,0.7);
+  -webkit-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;*/
+}
+.ls-list-preloader.hidden{
+  opacity: 0;
+}
+.mat-spinner{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -50px;
+  margin-top: -50px;
+}
+.ls-list-actions{
+  position: absolute;
+  top: 0;
+  left: 100%;
+  margin-right: -40px;
+  width: 46px;
+  height: 140px;
+}
+.ls-list-action{
+  display: block;
+  width: 46px;
+  height: 46px;
+  text-align: center;
+  color: white;  
+  background-color: rgba(0,0,0,.2);
+  -webkit-transition: all 0.2s ease;
+  -o-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.ls-list-action:not(:last-child) {
+  margin-bottom: 1px;
+}
+.ls-list-action:hover{
+  background-color: rgba(0,0,0,.7)
+}
+.ls-list-action > .mat-icon{
+  height: 46px;
+  width: 46px;
+  line-height: 46px;
+  vertical-align: middle;
+}
+.ls-list-action:first-child{
+  border-radius: 0 11px 0 0;
+}
+.ls-list-action:last-child{
+  border-radius: 0  0 11px 0;
+}
+.ls-list-pagination{
+  text-align: center;
+  margin-top: 15px;
+  color:#444;
+}
+.ls-list-pagination > button{
+  margin: 0px 3px;
+}
+.ls-list-no-items{
+  min-height: 30px;
+  height:30px;
+}
+.ls-list-no-items>td{
+  text-align: center!important;
+  font-size: 16px;
+}
+.ls-list-no-items:hover>td{
+  background-color: transparent!important;
+}
+
+.searchText{
+  color: green;
+}

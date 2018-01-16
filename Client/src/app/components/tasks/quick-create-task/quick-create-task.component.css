@@ -1,0 +1,83 @@
+.task.new{
+    height: 55px;
+    width: 100%;
+    background-color: rgba(255,255,255,.7);
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+    border-radius: 5px;
+    margin-bottom: 3px;
+    font-size: 0;
+    position: relative;
+}
+.add-icon-wrapper{
+    display: inline-block;
+    vertical-align: top;
+    height: 55px;
+    width: 70px;
+    text-align: center;
+    color: #929292;
+}
+.add-icon-wrapper mat-icon{
+    font-size: 30px;
+    height: auto;
+    width: auto;
+    padding: 13px 0px;
+}
+.form-wrapper{
+    display: inline-block;
+    vertical-align: top;
+    width: calc(100% - 180px);
+}
+.form-wrapper input[name="Title"]{
+    background-color: transparent;
+    border: none;
+    outline: none;
+    font-family: Roboto,"Helvetica Neue",sans-serif;
+    font-size: 16px;
+    padding: 0;
+    padding-top: 21px;
+    padding-bottom: 15px;
+    color: #444;
+    width: 100%;
+    text-overflow: ellipsis;
+}
+.form-wrapper .task-importance{
+    position: absolute;
+    right: 15px;
+    bottom: 0;
+    top: 0;
+    width: 50px;
+    z-index: 2;
+    text-align: center;
+    cursor: pointer;
+}
+.form-wrapper .task-importance mat-icon{
+    height: auto;
+    width: auto;
+    padding: 16px 0;        
+}
+.form-wrapper .task-importance-bg{
+    position: absolute;
+    right: 15px;
+    bottom: 0;
+    top: 0;
+    width: 50px;
+    text-align: center;
+}
+.form-wrapper .task-importance-bg img{
+    width: 42px;
+    height: auto;
+}
+.form-wrapper .task-date{
+    position: absolute;
+    right: 65px;
+    bottom: 0;
+    top: 0;
+    width: 50px;
+    text-align: center;
+    cursor: pointer;
+}
+.form-wrapper .task-date mat-icon{
+    height: auto;
+    width: auto;
+    padding: 16px 0; 
+}

@@ -1,0 +1,47 @@
+<div class="work-task-wrapper">
+    <div class="task-header">
+        <a class="author-avatar" [ngStyle]="{'background-image': 'url(' + authorAvatarUrl + ')'}" ></a>
+        <div class="author-info">
+            <a class="author-name">{{ task.TaskAuthore.Title }}</a>
+            <div class="task-created">{{ 'LSDocs.Author' | translate  }}</div>
+        </div>
+    </div>
+    <div class="task-header">
+        <a class="author-avatar" [ngStyle]="{'background-image': 'url(' + assignedToAvatarUrl + ')'}" ></a>
+        <div class="author-info">
+            <a class="author-name">{{ task.AssignedTo.Title }}</a>
+            <div class="task-created">{{ 'LSDocs.Assigned' | translate }}</div>
+        </div>
+    </div>
+    <form > 
+        <mat-form-field>
+            <input matInput readonly type="text" placeholder="{{ 'Tasks.Name' | translate }}" [(ngModel)]="task.Title" name="Title" #Title="ngModel"  [disabled]="userRole == 'assignedTo'">
+        </mat-form-field>
+        <mat-form-field *ngIf="task.TaskDescription" class="example-full-width">
+            <input matInput readonly type="text" placeholder="{{ 'Tasks.Description' | translate }}" [(ngModel)]="task.TaskDescription" name="Description" #Description="ngModel" [disabled]="userRole == 'assignedTo'">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput readonly type="text" placeholder="{{ 'Tasks.StartDate' | translate }}"  value="{{task.StartDate | date:'EEE, dd MMM' }}"  [disabled]="userRole == 'assignedTo'">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput readonly type="text" placeholder="{{ 'Tasks.EndingDate' | translate }}"  value="{{task.TaskDueDate | date:'EEE, dd MMM' }}" [disabled]="userRole == 'assignedTo'">
+        </mat-form-field>
+        <mat-form-field>
+                <!-- [(ngModel)]="task.OData__Status" name="Status" #Status="ngModel" [disabled]="userRole == 'assignedTo'" -->
+            <input matInput *ngIf="task.OData__Status == config.lsdocsStatuses.new"  readonly type="text" placeholder="{{ 'Tasks.Status' | translate }}" value="{{ 'Tasks.New' | translate }}" >
+            <input matInput *ngIf="task.OData__Status == config.lsdocsStatuses.inprogress"  readonly type="text" placeholder="{{ 'Tasks.Status' | translate }}" value="{{ 'Tasks.InProgress' | translate }}" >
+            <input matInput *ngIf="task.OData__Status == config.lsdocsStatuses.done"  readonly type="text" placeholder="{{ 'Tasks.Status' | translate }}" value="{{ 'Tasks.Done' | translate }}" >
+            <input matInput *ngIf="!task.OData__Status"  readonly type="text" placeholder="{{ 'Tasks.Status' | translate }}" value="Unset status" >
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
+            <textarea matInput rows="5" placeholder="{{ 'LSDocs.Comment' | translate }}" [(ngModel)]="comment" name="Comment" #Comment="ngModel" [disabled]="userRole == 'assignedTo'"></textarea>
+        </mat-form-field>
+        <button mat-raised-button color="primary" type="submit" class="lsdocsButtons" *ngIf="task.OData__Status == config.lsdocsStatuses.new" (click)="ProgressTask(task)" >{{ 'LSDocs.ToWork' | translate }}</button>
+        <ng-container *ngIf="task.OData__Status != config.lsdocsStatuses.done && task.sysTaskLevel == 1" >
+            <button mat-raised-button color="primary" type="submit" class="lsdocsButtons" *ngIf="task.ContentType.Name == 'LSTaskAppruve' || task.ContentType.Name == 'LSTaskAgreement' " (click)="DoneTask(task,'Back')" >{{ 'LSDocs.Reject' | translate }}</button>
+            <button mat-raised-button color="primary" type="submit" class="lsdocsButtons" *ngIf="task.ContentType.Name == 'LSTaskPreparetion' " (click)="DoneTask(task,'RefuseTask')" >{{ 'LSDocs.Cancel' | translate }}</button>        
+        </ng-container>
+        <button mat-raised-button color="primary" type="submit" class="lsdocsButtons" *ngIf="task.OData__Status != config.lsdocsStatuses.done && task.ContentType.Name == 'LSTaskAppruve'" (click)="DoneTask(task,'Done')" >{{ 'LSDocs.Approve' | translate }}</button>
+        <button mat-raised-button color="primary" type="submit" class="lsdocsButtons" *ngIf="task.OData__Status != config.lsdocsStatuses.done && task.ContentType.Name != 'LSTaskAppruve'" (click)="DoneTask(task,'Done')" >{{ 'LSDocs.Execute' | translate }}</button>
+    </form>
+</div>

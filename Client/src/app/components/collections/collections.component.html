@@ -1,0 +1,11 @@
+<div class="component-container">
+    <div class="collections-list container-fluid">
+        <div class="row">
+            <div class="card-wrapper col-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let collection of collections">
+                <mat-card routerLink="/collection/{{ collection.name }}" routerLinkActive="active">
+                    <span>{{ collection.name }}</span>
+                </mat-card>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,50 @@
+<div class="task-info-wrapper" *ngIf="task != null">
+    <div class="task-importance" *ngIf="task.IsImportant == true">
+        <div>
+            <img src="/src/img/importance-bg.png"/>
+            <mat-icon>star</mat-icon>
+        </div>
+    </div>
+    <div class="task-header">
+        <a class="author-avatar" [ngStyle]="{'background-image': 'url(' + authorAvatarUrl + ')'}" routerLink="/profile/{{authorId}}"></a>
+        <div class="author-info">
+            <a class="author-name" routerLink="/profile/{{authorId}}">{{ task.Author.props.Name }}</a>
+            <div class="task-created">{{ task.Created | date:'short' }}</div>
+        </div>
+    </div>
+    <mat-tab-group class="task-body">
+        <mat-tab label="{{ 'Tasks.Details' | translate }}">
+            <table class="task-properties" *ngIf="userRole == null">
+                <tbody>
+                    <tr>
+                        <td>{{ 'Tasks.Name' | translate }}</td>
+                        <td>{{ task.Title }}</td>
+                    </tr>
+                    <tr *ngIf="task.Description != null">
+                        <td>{{ 'Tasks.Description' | translate }}</td>
+                        <td>{{ task.Description }}</td>
+                    </tr>
+                    <tr *ngIf="task.AssignedTo.props._id != user._id">
+                        <td>{{ 'Tasks.Executor' | translate }}</td>
+                        <td>
+                            <div class="assignedto-avatar" [ngStyle]="{'background-image': 'url(' + assignedToAvatarUrl + ')'}"></div>
+                            <span>{{ task.AssignedTo.props.Name }}</span>
+                        </td>
+                    </tr>
+                    <tr *ngIf="task.DueDate != null">
+                        <td>{{ 'Tasks.Deadline' | translate }}</td>
+                        <td>{{ task.DueDate | date: 'shortDate' }}</td>
+                    </tr>
+                    <tr *ngIf="task.Status != null">
+                        <td>{{ 'Tasks.Status' | translate }}</td>
+                        <td>{{ task.Status }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <edit-task *ngIf="userRole != null" [taskId]="task._id"></edit-task>
+        </mat-tab>
+        <mat-tab label="{{ 'Tasks.Discussion' | translate }}">
+            <discussion-task [taskId]="taskId"></discussion-task>
+        </mat-tab>
+    </mat-tab-group>
+</div>

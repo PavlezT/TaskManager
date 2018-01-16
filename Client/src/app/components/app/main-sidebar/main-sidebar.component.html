@@ -1,0 +1,110 @@
+<mat-toolbar>
+    <span></span>
+    <mat-toolbar-row style="background-color: white;">
+        <div class="current-user-avatar" [ngStyle]="{'background-image': 'url(' + avatarUrl + ')'}" routerLink="/profile/{{userId}}" (click)="hideMainSidebar()"></div>
+        <a class="current-user-name" *ngIf="user && generalService.isLargeScreen()" routerLink="/profile/{{userId}}" (click)="hideMainSidebar()">{{user.Name.split(' ')[0]}}</a>
+        <a class="site-actions-btn" mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>chevron_right</mat-icon>
+        </a>
+        <mat-menu #menu="matMenu">
+            <!-- <button mat-menu-item [disabled]="true">
+                <mat-icon>notifications</mat-icon>
+                <span>{{'SideBar.Notifications' | translate}}</span>
+            </button> -->
+            <a *ngIf="user && user.Admin" mat-menu-item routerLink="/collections" (click)="hideMainSidebar()">
+                <mat-icon>list</mat-icon>
+                <span>{{ 'SideBar.SiteContent'| translate}}</span>
+            </a>
+            <a mat-menu-item routerLink="/employees" (click)="hideMainSidebar()">
+                <mat-icon>people</mat-icon>
+                <span>{{ 'SideBar.Employees' | translate}}</span>
+            </a>
+            <a mat-menu-item routerLink="/profile-settings" (click)="hideMainSidebar()">
+                <mat-icon>build</mat-icon>
+                <span>{{'SideBar.MySettings'| translate}}</span>
+            </a>
+            <a *ngIf="user && user.Admin" mat-menu-item routerLink="/company-settings" (click)="hideMainSidebar()">
+                <mat-icon>settings</mat-icon>
+                <span>{{'SideBar.CompanySettings'| translate}}</span>
+            </a>
+            <!-- <button mat-menu-item [disabled]="true">
+                <mat-icon>info_outline</mat-icon>
+                <span>{{'SideBar.Information'| translate}}</span>
+            </button> -->
+            <a mat-menu-item href="/logout">
+                <mat-icon>exit_to_app</mat-icon>
+                <span>{{'Exit' | translate}} {{'SideBar.fromTheAccount' | translate}}</span>
+            </a>
+        </mat-menu>
+    </mat-toolbar-row>
+    <mat-toolbar-row>
+        <button mat-button (click)="createTaskClick()">
+            <span>
+                <mat-icon>add</mat-icon>
+                <span class="button-text">{{'Create'| translate}} {{'Tasks.task'| translate}}</span>
+            </span>
+        </button>
+    </mat-toolbar-row>
+    <mat-toolbar-row>
+        <button mat-button routerLink="/tasks/important" routerLinkActive="tasks-active-link" (click)="hideMainSidebar()">
+            <span>
+                <mat-icon>info_outline</mat-icon>
+                <span class="button-text">{{'SideBar.Important'| translate}}</span>
+                <span class="tasks-counter">{{ importantTasksCount }}</span>
+            </span>
+        </button>
+    </mat-toolbar-row>
+    <!-- <mat-toolbar-row>
+        <button mat-button routerLink="/tasks/new" routerLinkActive="tasks-active-link" (click)="hideMainSidebar()">
+            <span>
+                <mat-icon>move_to_inbox</mat-icon>
+                <span class="button-text">{{'SideBar.Newest'| translate}}</span>
+                <span class="tasks-counter">{{ newTasksCount }}</span>
+            </span>
+        </button>
+    </mat-toolbar-row>
+    <mat-toolbar-row>
+        <button mat-button routerLink="/tasks/today" routerLinkActive="tasks-active-link" (click)="hideMainSidebar()">
+            <span>
+                <mat-icon>date_range</mat-icon>
+                <span class="button-text">{{'SideBar.Today'| translate}}</span>
+                <span class="tasks-counter">{{ todayTasksCount }}</span>
+            </span>
+        </button>
+    </mat-toolbar-row> -->
+    <mat-toolbar-row>
+        <button mat-button routerLink="/tasks/my" routerLinkActive="tasks-active-link" (click)="hideMainSidebar()">
+            <span>
+                <mat-icon>search</mat-icon>
+                <span class="button-text">{{'SideBar.Incoming'| translate}}</span>
+                <span class="tasks-counter">{{ myTasksCount }}</span>
+            </span>
+        </button>
+    </mat-toolbar-row>
+    <mat-toolbar-row>
+        <button mat-button routerLink="/tasks/outgoing" routerLinkActive="tasks-active-link" (click)="hideMainSidebar()">
+            <span>
+                <mat-icon>zoom_out_map</mat-icon>
+                <span class="button-text">{{'SideBar.DeliveredByMe'| translate}}</span>
+                <span class="tasks-counter">{{ outgoingTasksCount }}</span>
+            </span>
+        </button>
+    </mat-toolbar-row>
+    <!-- <mat-toolbar-row>
+        <button mat-button routerLink="/tasks/lsdocs" routerLinkActive="tasks-active-link" (click)="hideMainSidebar()">
+            <span>
+                <mat-icon>cloud_queue</mat-icon>
+                <span class="button-text">{{'LSDocs.AppName'| translate}}</span>
+            </span>
+        </button>
+    </mat-toolbar-row> -->
+    <mat-toolbar-row *ngFor="let userTaskCategory of userTaskCategories" [dragula]='"categories-bag"' [attr.data-id]="userTaskCategory._id">
+        <button mat-button routerLink="/tasks/category/{{ userTaskCategory._id }}" routerLinkActive="tasks-active-link" (click)="hideMainSidebar()">
+            <span>
+                <mat-icon></mat-icon>
+                <span class="button-text">{{ userTaskCategory.Title }}</span>
+                <span class="tasks-counter">{{ userTaskCategory.Count }}</span>
+            </span>
+        </button>
+    </mat-toolbar-row>
+</mat-toolbar>

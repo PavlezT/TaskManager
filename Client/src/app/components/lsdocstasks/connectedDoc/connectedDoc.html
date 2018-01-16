@@ -1,0 +1,22 @@
+<div class="work-task-wrapper">
+    <div class="task-header">
+        <div class="author-info">
+            <mat-icon style="color:cornflowerblue ">assignment</mat-icon>
+            <a class="author-name">{{ task.Title }}</a>
+            <div class="task-created">{{ 'LSDocs.TaskTitle' | translate  }}</div>  
+        </div>
+        <div class="author-info">
+            <mat-icon style="color:cornflowerblue ">assignment</mat-icon>
+            <a class="author-name">{{ doc.Title }}</a>
+            <div class="task-created">{{ 'LSDocs.DocTitle' | translate  }}</div>
+        </div>
+    </div>
+    <form > 
+        <mat-form-field *ngFor="let field of Fields" >
+            <input matInput readonly type="text" placeholder="{{ field.Title }}" value="{{doc[field.StaticName]}}">
+        </mat-form-field>
+    </form>
+    <div class="ls-list-preloader" [@preloaderState]="preloaderVisible">
+        <mat-spinner style="margin: auto;"></mat-spinner>
+    </div>
+</div>

@@ -1,0 +1,31 @@
+<mat-sidenav-container>
+    <mat-sidenav mode="over" align="end" (close)="onTaskSidenavClose()" [opened]="tasksSidebarOpened" [ngClass]="tasksSidebarType">
+        <create-task *ngIf="tasksSidebarType == 'create'"></create-task>
+        <info-task *ngIf="tasksSidebarType == 'info' && ( !taskInfoViewed.Source ||  taskInfoViewed.Source == config.sources.dynamics365)" [taskId]="taskInfoViewed._id"></info-task>
+        <work-task *ngIf="tasksSidebarType == 'info' && taskInfoViewed.Source == config.sources.lsdocs" [task]="taskInfoViewed.ExternalDoc.props" [toDoneTask]="doneLSDocsTask"></work-task>
+        <connectedDoc *ngIf="tasksSidebarType == 'connectedLSDocsDoc'" [task]="taskInfoViewed.ExternalDoc.props" ></connectedDoc>
+    </mat-sidenav>
+    <div class="component-container">
+        <quick-create-task></quick-create-task>
+        <div class="tasks-list-wrapper" [dragula]='"categories-bag"'>
+            <div *ngFor="let task of items" class="task" [attr.data-id]="task._id">
+                <div class="task-checkbox-wrapper">
+                    <mat-checkbox color="primary" matTooltip="{{ 'Tasks.Execute' | translate }}" (change)="completeTask($event, task)" [checked]="task.Status == config.tasksStatuses.done" [disabled]="task.AssignedTo._docId != user._id"></mat-checkbox>
+                </div>
+                <div class="task-title" [ngClass]="task.Source ? 'withPadding' : '' " (tap)="openTaskInfo($event, task)">
+                    {{ task.Title }}
+                    <mat-icon *ngIf="task.Source == config.sources.lsdocs" (tap)="openTaskInfo($event,task,'connectedLSDocsDoc')" class="task-source-icon" title="LS Docs">cloud_queue</mat-icon>
+                    <img *ngIf="task.Source == config.sources.dynamics365" class="task-source-img" src="/src/img/dynamics.png" title="Dynamics 365"/>
+                </div>
+                <div class="task-date"  (tap)="openTaskInfo($event, task)" *ngIf="task.DueDate != null">{{ task.DueDate | date:'shortDate' }}</div>
+                <div class="task-importance" (click)="toggleTaskImportance($event, task)">
+                    <mat-icon *ngIf="task.IsImportant == true" style="color: white;">star</mat-icon>
+                    <mat-icon *ngIf="(task.IsImportant == null)||(task.IsImportant == false)">star_border</mat-icon>
+                </div>
+                <div class="task-importance-bg" *ngIf="task.IsImportant == true">
+                    <img src="/src/img/importance-bg.png">
+                </div>
+            </div>
+        </div>
+    </div>
+</mat-sidenav-container>

@@ -1,0 +1,13 @@
+.create-task-wrapper{
+    width: 100%;
+    padding: 20px;
+}
+.create-task-wrapper .form-title{
+    margin-bottom: 15px;
+    font-size: 20px;
+    color: #000;
+}
+.create-task-wrapper mat-form-field,
+.create-task-wrapper mat-select{
+    width: 100%;
+}

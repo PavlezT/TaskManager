@@ -1,0 +1,56 @@
+<div class="component-container">
+    <h2 style="color: #444; font-weight: 200;">
+       {{ 'Company.Settings.SettingsPage' | translate }}
+    </h2>
+    <div *ngIf="user && user.Admin" class="profile-settings-wrapper">
+        <p>{{ 'Company.Settings.SelectAdmins' | translate }}</p>
+        <form (submit)="addCompanyAdmin($event)"  class="connection-settings-form" >
+            <mat-chip-list *ngIf="allUsers != null && allUsers.length > 0">
+                <ng-container *ngFor="let companyUser of allUsers">
+                    <mat-chip *ngIf="companyUser.Admin">
+                        {{ companyUser.Name }}
+                        <mat-icon *ngIf="!companyUser.deleting" (click)="deleteAdminUser($event, companyUser)">close</mat-icon>
+                        <mat-icon *ngIf="companyUser.deleting">cached</mat-icon>
+                    </mat-chip>
+                </ng-container>
+            </mat-chip-list>
+            <mat-form-field style="margin-top: 10px;">
+                <mat-select [formControl]="usersValid" placeholder="{{ 'Company.Settings.SelectAdminsPlaceholder' | translate }}" [(ngModel)]="selectedUser" name="selectedUser" required>
+                    <ng-container *ngFor="let companyUser of allUsers">
+                        <mat-option *ngIf="!companyUser.Admin" [value]="companyUser">
+                            {{ companyUser.Name }}
+                        </mat-option>
+                    </ng-container>
+                </mat-select>
+            </mat-form-field>
+            <button mat-button type="submit">{{ 'Add' | translate }}</button>
+        </form>
+        <p>{{ 'Company.Settings.LSDocsConnection' | translate }}</p>
+        <form (submit)="subscribeLSDocs($event)"  class="connection-settings-form" >
+            <p *ngIf="lsDocsSubscription" class="url-input">{{lsDocsSubscription.siteUrl}}</p>
+            <p *ngIf="lsDocsSubscription" class="url-input">{{ (lsDocsSubscription.expirationDateTime) | date:'medium' }}</p>
+            <!-- <mat-form-field class="url-input">  -->
+                <!-- <input matInput type="text" disabled placeholder="Input your LSDocs connection url" [(ngModel)]="siteUrlDocs" name="siteUrlDocs" required> -->
+            <!-- </mat-form-field> -->
+            <mat-form-field>
+                <mat-select [formControl]="docsValid" placeholder="{{ 'Company.Settings.SelectLSDocsPlaceholder' | translate }}" [(ngModel)]="lsDocsSubscription.siteUrl" name="lsDocsSubscription.siteUrl" required>
+                    <mat-option *ngFor="let site of availableSites" [value]="site.webUrl">
+                        {{ site.displayName }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <button mat-button type="submit">{{ 'Save' | translate }}</button>
+        </form>
+        <p>{{ 'Company.Settings.Dynamics365Connection' | translate }}</p>
+        <form (submit)="onDynamics365ConnectionFormSubmit($event, dynamics365ConnectionForm)" #dynamics365ConnectionForm="ngForm" class="connection-settings-form dynamics365-form" >
+            <mat-form-field>
+                <input matInput type="text" placeholder="{{ 'Company.Settings.Dynamics365Url' | translate }}" [(ngModel)]="dynamics365Subscription.DynamicsInstanceUrl" name="DynamicsInstanceUrl" #DynamicsInstanceUrl="ngModel" required>
+            </mat-form-field>
+            <br>
+            <mat-form-field>
+                <input matInput type="text" placeholder="{{ 'Company.Settings.Dynamics365OrgName' | translate }}" [(ngModel)]="dynamics365Subscription.DynamicsOrgName" name="DynamicsOrgName" #DynamicsOrgName="ngModel" required>
+            </mat-form-field>
+            <button mat-button type="submit" [disabled]="!dynamics365ConnectionForm.valid">{{ 'Save' | translate }}</button>
+        </form>
+    </div>
+</div>

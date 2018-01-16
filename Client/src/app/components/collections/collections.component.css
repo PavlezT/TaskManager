@@ -1,0 +1,27 @@
+.collections-list{
+    width: 100%;
+    font-size: 0;
+}
+.collections-list .card-wrapper{
+    padding: 10px;
+}
+.collections-list .card-wrapper mat-card{
+    cursor: pointer;
+    transform: scale(0.95);
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
+}
+.collections-list .card-wrapper mat-card > span{
+    font-size: 18px;
+}
+.collections-list .card-wrapper mat-card:hover{
+    transform: scale(1);
+}
+.collections-list .card-wrapper mat-icon{
+    font-size: 100px;
+    margin-top: 20px;
+    color: #bdbdbd;
+    height: auto;
+    width: auto;
+}

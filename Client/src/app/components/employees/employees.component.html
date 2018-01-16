@@ -1,0 +1,30 @@
+<div class="component-container">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 col-sm-6 col-lg-4" *ngFor="let user of Users;index as i; last as isLast">
+                <mat-card  *ngIf="i != itemsPerPage">
+                    <mat-card-title>{{user.Name}}</mat-card-title>
+                    <mat-card-subtitle> {{user.JobTitle}}</mat-card-subtitle>
+                    <img mat-card-lg-image src="/src/img/avatars/{{user.Company._docId}}/{{user._id}}.jpeg" />
+                    <mat-card-content>
+                        <div class="current-user-dep" *ngIf="user.Department != null"><b>{{'Profile.Info.Departament'| translate}}</b><br>{{user.Department}}</div>
+                        <div class="current-user-job-title" *ngIf="user.JobTitle != null"><b>{{'Profile.Info.Position'| translate}}</b><br>{{user.JobTitle}}</div>
+                        <div class="current-user-contacts" *ngIf="user.Phone != null"><b>{{'Profile.Info.Contacts'| translate}}</b><br>{{user.Phone}}<br>{{user.Email || ''}}</div>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </div>
+    </div>
+    <!-- <mat-paginator [length]="elementsLength" [pageSize]="itemsPerPage"></mat-paginator> -->
+    <div class="ls-list-pagination">
+        <button mat-icon-button [disabled]="pageNumber == 1" (click)="paginationChange('prev')" matTooltip="{{ 'PrevPage' | translate }}">
+            <mat-icon>chevron_left</mat-icon>
+        </button>
+        <button mat-icon-button [disabled]="Users == null || (Users.length <= itemsPerPage)" (click)="paginationChange('next')" matTooltip="{{ 'NextPage' | translate }}">
+            <mat-icon>chevron_right</mat-icon>
+        </button>
+    </div>
+    <div class="ls-list-preloader" [@preloaderState]="preloaderVisible">
+       <mat-spinner></mat-spinner>
+    </div>
+</div>

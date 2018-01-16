@@ -1,0 +1,13 @@
+{
+  "name": "lstasks",
+  "version": "0.0.0",
+  "description": "LSTasks",
+  "author": {
+    "name": "aleksandr.demianenko"
+  },
+  "dependencies": {
+    "gulp": "^3.9.1",
+    "gulp-changed": "^3.1.0",
+    "gulp-watch": "^4.3.11"
+  }
+}

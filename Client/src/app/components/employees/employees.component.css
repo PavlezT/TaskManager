@@ -1,0 +1,42 @@
+mat-card{
+    margin-bottom:15px;
+    height: 480px;
+}
+.current-user-name{
+    font-size: 18px;
+    color: #1e88e5;
+}
+.current-user-name,
+.current-user-dep,
+.current-user-job-title,
+.current-user-contacts,
+.profile-settings-link{
+    padding: 10px 0;
+    word-break: break-all;
+}
+.current-user-dep b,
+.current-user-job-title b,
+.current-user-contacts b{
+    margin-bottom: 5px;
+    word-break: break-all;
+}
+
+.ls-list-preloader.hidden{
+    opacity: 0;
+  }
+  .mat-spinner{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -50px;
+    margin-top: -50px;
+  }
+
+  .ls-list-pagination{
+    text-align: center;
+    margin-top: 15px;
+    color:#444;
+  }
+  .ls-list-pagination > button{
+    margin: 0px 3px;
+  }

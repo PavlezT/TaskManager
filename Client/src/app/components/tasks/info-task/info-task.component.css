@@ -1,0 +1,129 @@
+.task-info-wrapper{
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+.task-info-wrapper .task-header{
+    padding: 30px;
+    height: 120px;
+}
+.task-info-wrapper .task-header .author-avatar{
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: grey;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 11px;
+    outline: none!important;
+}
+.task-info-wrapper .task-header .author-info{
+    display: inline-block;
+    vertical-align: top;
+}
+.task-info-wrapper .task-header .author-info .author-name{
+    font-weight: 600;
+    margin-top: 4px;
+    font-size: 19px;
+    color: #444;
+    text-decoration: none;
+}
+.task-info-wrapper .task-header .author-info .author-name:hover{
+    color: black;
+}
+.task-info-wrapper .task-header .author-info .task-created{
+    color: #7d7d7d;
+    font-size: 14px;
+    margin-top: 5px;
+}
+.task-info-wrapper .task-body{
+    height: calc(100% - 120px);
+}
+.task-info-wrapper .task-body >>> .mat-tab-body-wrapper{
+    height: 100%;
+}
+.task-info-wrapper .task-body >>> .mat-tab-label-active {
+    background-color: #e6e6e6;
+}
+.task-info-wrapper .task-properties{
+    width: 100%;
+    table-layout: fixed;
+}
+.task-info-wrapper .task-properties tr td:first-child{
+    width: 160px;
+    font-weight: 600;
+    color: black;
+    padding-right: 15px;
+}
+.task-info-wrapper .task-properties tr td{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+    vertical-align: top;
+    padding: 10px 5px;
+}
+.task-info-wrapper .task-properties .assignedto-avatar{
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: grey;
+    display: inline-block;
+    margin-right: 10px;
+}
+.task-info-wrapper .task-properties .assignedto-avatar + span{
+    vertical-align: top;
+    margin-top: 6px;
+    display: inline-block;
+}
+.task-info-wrapper .task-importance{
+    position: absolute;
+    top: 0;
+    right: 50px;
+    width: 50px;
+    height: 55px;
+}
+.task-info-wrapper .task-importance img{
+    width: 42px;
+    height: auto;
+}
+.task-info-wrapper .task-importance > div{
+    position: relative;
+    width: 50px;
+    height: 55px;
+}
+.task-info-wrapper .task-importance mat-icon{
+    position: absolute;
+    color: white;
+    top: 15px;
+    left: 9px;
+}
+@media screen and (max-width: 768px) {
+    .task-info-wrapper .task-header {
+        padding: 25px 20px;
+        height: 90px;
+    }
+    .task-info-wrapper .task-header .author-avatar{
+        width: 40px;
+        height: 40px;
+    }
+    .task-info-wrapper .task-header .author-info .author-name{
+        font-size: 15px;
+    }
+    .task-info-wrapper .task-header .author-info .task-created{
+        font-size: 13px;
+    }
+    .task-info-wrapper .task-importance{
+        right: 5px;
+    }
+    .task-info-wrapper .task-body{
+        height: calc(100% - 90px);
+    }
+    .task-info-wrapper .task-body >>> .mat-tab-label{
+        height: 40px;
+    }
+}

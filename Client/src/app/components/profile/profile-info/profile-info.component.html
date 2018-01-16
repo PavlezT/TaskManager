@@ -1,0 +1,12 @@
+<div class="component-container" *ngIf="user">
+    <div class="profile-wrapper">
+        <div class="current-user-big-avatar" [ngStyle]="{'background-image': 'url(' + avatarUrl + ')'}"></div>
+        <div class="current-user-name">{{user.Name}}</div>
+        <div class="current-user-dep" *ngIf="user.Department != null"><b>{{'Profile.Info.Departament'| translate}}</b><br>{{user.Department}}</div>
+        <div class="current-user-job-title" *ngIf="user.JobTitle != null"><b>{{'Profile.Info.Position'| translate}}</b><br>{{user.JobTitle}}</div>
+        <div class="current-user-contacts" *ngIf="user.Phone != null"><b>{{'Profile.Info.Contacts'| translate}}</b><br>{{user.Phone}}</div>
+        <div class="profile-settings-link" *ngIf="isCurrentUserProfile">
+            <a routerLink="/profile-settings" routerLinkActive="active">{{ 'Profile.Info.ToSettings' | translate }} <mat-icon class="mat-18">arrow_forward</mat-icon></a>
+        </div>
+    </div>
+</div>

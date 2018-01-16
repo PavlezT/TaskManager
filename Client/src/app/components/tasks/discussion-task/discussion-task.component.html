@@ -1,0 +1,31 @@
+<div class="discussion-task-wrapper">
+<!--<div class="task-title">{{ task.Title }}</div>-->
+<div class="messages">
+    <div class="message" *ngFor="let message of messages" [ngClass]="(message.Author._docId == user._id) ? 'user-author' : ''">
+        <div class="message-info">
+            <a class="message-author" *ngIf="message.Author._docId != user._id" routerLink="/profile/{{message.Author._docId}}">
+                {{ message.Author.props.Name }}
+            </a>
+            <a class="message-author" *ngIf="message.Author._docId == user._id" routerLink="/profile/{{message.Author._docId}}">
+                {{ 'You' | translate }}
+            </a>
+            <div class="message-date">
+                {{ message.Created | date: 'short'}}
+                <!-- "dd.MM.yyyy HH:mm"  -->
+            </div>
+        </div>
+        <div class="message-body">
+            <div class="message-triangle"></div>
+            {{ message.Body }}
+        </div>
+    </div>
+</div>
+<div class="new-task-message-form-wrapper">
+    <form class="new-task-message-form" (submit)="onNewTaskMessageFormSubmit($event, newTaskMessageForm)" (keyup.enter)="onNewTaskMessageFormSubmit($event, newTaskMessageForm)" #newTaskMessageForm="ngForm">
+        <mat-form-field>
+            <textarea matInput rows="2" placeholder="{{ 'EnterMessageText' | translate }}..." [(ngModel)]="model.Body" name="Body" #Body="ngModel"></textarea>
+        </mat-form-field>
+        <button type="submit" [hidden]="true"></button>
+    </form>
+</div>
+</div>

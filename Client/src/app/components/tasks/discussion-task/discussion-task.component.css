@@ -1,0 +1,98 @@
+.discussion-task-wrapper{
+    height: 100%;
+}
+.task-title{
+    border-bottom: 1px solid #e2e2e2;
+    padding: 15px 10px;
+    font-weight: 600;
+}
+.messages{
+    height: calc( 100% - 135px );
+    overflow: auto;
+    padding: 20px;
+    position: relative;
+}
+.messages::-webkit-scrollbar
+{
+    width: 15px;
+    background-color: transparent;
+}        
+.messages::-webkit-scrollbar-thumb
+{
+    background-color: #a2a2a2;
+    border: 5px solid white;
+    border-radius: 15px;
+}
+.messages .message:not(:last-child){
+    margin-bottom: 20px;
+}
+.message.user-author .message-info{
+    text-align: right;
+}
+.message-author{
+    display: inline-block;
+    cursor: pointer;
+    outline: none!important;
+    color: #444;
+    text-decoration: none;
+}
+.message-author:hover{
+    color: black;
+}
+.message-date{
+    display: inline-block;
+    margin-left: 10px;
+    color: #7d7d7d;
+    font-size: 14px;
+}
+.message-body{
+    margin-top: 12px;
+    background-color: #ededed;
+    padding: 10px 15px;
+    border-radius: 7px;
+    position: relative;
+    word-break: break-word;
+}
+.message.user-author .message-body{
+    background-color: #6fc8d8;
+    color: white;
+}
+.message-body .message-triangle{
+    position: absolute;
+    top: -8px;
+    left: 40px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 8px solid #ededed;
+}
+.message.user-author .message-triangle{
+    left: auto;
+    right: 40px;
+    border-bottom: 8px solid #6fc8d8;
+}
+.new-task-message-form-wrapper{
+    position: absolute;
+    bottom: 5px;
+    left: 20px;
+    right: 20px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    border-top: 1px solid #e2e2e2;
+}
+.new-task-message-form{
+    padding: 15px;
+    padding-bottom: 0;
+    border-radius: 7px;
+    background-color: #ededed;
+    -webkit-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.2);
+    -moz-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.2);
+    box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.2);
+}
+.new-task-message-form mat-form-field{
+    width: 100%;
+}
+.new-task-message-form textarea {
+    resize: none;
+}
