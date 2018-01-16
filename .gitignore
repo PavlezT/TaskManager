@@ -1,9 +1,5 @@
 node_modules
 Server/src/img/avatars
-Server/src/main.bundle.js
-Server/src/polyfills.bundle.js
-Server/src/styles.bundle.js
-Server/src/vendor.bundle.js
 Server/logs/filelog-verbose*.log
 Server/logs/filelog-info*.log
 Server/logs/filelog-error*.log
