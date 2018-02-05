@@ -10,6 +10,7 @@
         <div *ngIf="itemAddModeActive" class="ls-list-header-info">{{ 'CollectionView.itemAddModeActive' | translate }}</div>
         <div *ngIf="searchInfo" class="ls-list-header-info">{{ 'Search' | translate }} {{ 'CollectionView.byValue' | translate }} : <span class="searchText">{{searchInfo}}</span>. <a href="javascript:void(0)" (click)="cancelSearch()">{{ 'Cancel' | translate }} {{ 'CollectionView.search' | translate }}</a></div>
       </div>
+      <div>
       <table class="ls-list-table">
         <thead>
           <tr>
@@ -70,7 +71,7 @@
                 </mat-menu>
               </div>
             </td>
-            <td *ngFor="let key of collectionKeys" [attr.key]="key"><div [attr.contenteditable]="item.ngProps.Editable">{{ item[key] != null ? item[key] : '' }}</div></td>
+            <td *ngFor="let key of collectionKeys" [attr.key]="key"><div [attr.contenteditable]="item.ngProps.Editable">{{ getItemView(item[key]) }}</div></td>
           </tr>
           <tr class="ls-list-no-items" *ngIf="((items != null) && (items.length == 0))">
             <td style="position : absolute;">
@@ -95,6 +96,7 @@
           </div>
         </div>
       </table>
+      </div>
       <div class="ls-list-pagination">
         <button mat-icon-button [disabled]="pageNumber == 1" (click)="paginationChange('prev')" matTooltip="{{ 'PrevPage' | translate }}">
           <mat-icon>chevron_left</mat-icon>

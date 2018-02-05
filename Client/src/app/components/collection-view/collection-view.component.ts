@@ -105,6 +105,10 @@ export class CollectionViewComponent implements OnInit {
     });
   }
 
+  public getItemView( item : any ) : string {
+    return item != null ? (typeof item == 'object' ? JSON.stringify(item) : item ) : '';
+  }
+
 //   --- Sort functionality --- 
 
   checkSort(key) : any {
