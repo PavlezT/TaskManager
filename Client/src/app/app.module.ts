@@ -57,6 +57,7 @@ import { EventEmitterService } from './shared/event-emitter.service';
 import { LSDocsTasksComponent } from './components/lsdocstasks/lsdocstasks.component';
 import { WorkLSDocsComponent } from './components/lsdocstasks/work-task/work-task.component';
 import { ConnectedDoc } from './components/lsdocstasks/connectedDoc/connectedDoc';
+import { LSDocsSubTasks } from './components/lsdocstasks/sub-tasks/sub-tasks.component';
 import { CompanySettings } from './components/company-settings/company-settings';
 
 export function createTranslateLoader(http: Http) {
@@ -112,6 +113,7 @@ export class MaterialDesign {}
     LSDocsTasksComponent,
     WorkLSDocsComponent,
     ConnectedDoc,
+    LSDocsSubTasks,
     EmployeesListView,
     ProfileSettingsComponent,
     ProfileAppInfoComponent,

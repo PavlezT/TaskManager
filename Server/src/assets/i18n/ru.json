@@ -86,6 +86,8 @@
         "InProgress" : "В работе",
         "Done" : "Выполнено",
         "Details" : "Подробности",
+        "SubTasks" : "Подзадачи",
+        "Reassignment" : "Резолюции",
         "Discussion" : "Обсуждение",
         "Execute" : "Выполнить"
     },

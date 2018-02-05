@@ -87,6 +87,44 @@ exports.getWebUrl = function(access_token){
         })
 }
 
+exports.getSubTasks = function(site,access_token,doc){
+    return request
+        .get(`${site}/_api/Web/Lists/GetByTitle('LSTasks')/items?`
+            +`$select=sysIDItem,ID,sysIDList,Title,StartDate,sysTaskLevel,TaskResults,sysIDMainTask,sysIDParentMainTask,`
+            +`TaskDueDate,OData__Status,TaskAuthore/Title,TaskAuthore/EMail,AssignedToId,AssignedTo/Title,AssignedTo/EMail`
+            +`&$expand=TaskAuthore/Title,TaskAuthore/EMail,AssignedTo/Title,AssignedTo/EMail`
+            +`&$filter=(sysIDMainTask eq '${doc.sysIDMainTask == 0 ? doc.Id : doc.sysIDMainTask }') and (sysTaskLevel eq '${parseInt(doc.sysTaskLevel)+1}')`
+        )
+        .set({
+            'Accept': 'application/json; odata=verbose',
+            'Authorization': `Bearer ${access_token}`
+        })
+        .then((data,err) =>{
+            if(err)
+                throw err;
+            return data;
+        })
+}
+
+exports.getSubRezolutions = function(site,access_token,doc){
+    return request
+        .get(`${site}/_api/Web/Lists/GetByTitle('LSTasks')/items?`
+            +`$select=sysIDItem,ID,sysIDList,Title,StartDate,sysTaskLevel,TaskResults,sysIDMainTask,sysIDParentMainTask,`
+            +`TaskDueDate,OData__Status,TaskAuthore/Title,TaskAuthore/EMail,AssignedToId,AssignedTo/Title,AssignedTo/EMail`
+            +`&$expand=TaskAuthore/Title,TaskAuthore/EMail,AssignedTo/Title,AssignedTo/EMail,ContentType`
+            +`&$filter=(sysIDItem eq '${doc.sysIDItem}') and (sysIDList eq '${doc.sysIDList}') and (ContentType eq 'LSResolutionTaskToDo') and (TaskAuthore/EMail eq '${doc.TaskAuthore.EMail}') and (StateID eq '${doc.StateID}')`
+        )
+        .set({
+            'Accept': 'application/json; odata=verbose',
+            'Authorization': `Bearer ${access_token}`
+        })
+        .then((data,err) =>{
+            if(err)
+                throw err;
+            return data;
+        })
+}
+    
 exports.checkResolution = function(site,access_token,doc){
     return request
         .get(`${site}/_api/Web/Lists/GetByTitle('LSTasks')/items?`

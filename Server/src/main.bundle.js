@@ -104,6 +104,7 @@ var event_emitter_service_1 = __webpack_require__("../../../../../src/app/shared
 var lsdocstasks_component_1 = __webpack_require__("../../../../../src/app/components/lsdocstasks/lsdocstasks.component.ts");
 var work_task_component_1 = __webpack_require__("../../../../../src/app/components/lsdocstasks/work-task/work-task.component.ts");
 var connectedDoc_1 = __webpack_require__("../../../../../src/app/components/lsdocstasks/connectedDoc/connectedDoc.ts");
+var sub_tasks_component_1 = __webpack_require__("../../../../../src/app/components/lsdocstasks/sub-tasks/sub-tasks.component.ts");
 var company_settings_1 = __webpack_require__("../../../../../src/app/components/company-settings/company-settings.ts");
 function createTranslateLoader(http) {
     return new ng2_translate_1.TranslateStaticLoader(http, './src/assets/i18n', '.json');
@@ -166,6 +167,7 @@ var AppModule = /** @class */ (function () {
                 lsdocstasks_component_1.LSDocsTasksComponent,
                 work_task_component_1.WorkLSDocsComponent,
                 connectedDoc_1.ConnectedDoc,
+                sub_tasks_component_1.LSDocsSubTasks,
                 employees_component_1.EmployeesListView,
                 profile_settings_component_1.ProfileSettingsComponent,
                 profile_info_component_1.ProfileAppInfoComponent,
@@ -1746,6 +1748,140 @@ exports.LSDocsTasksComponent = LSDocsTasksComponent;
 
 /***/ }),
 
+/***/ "../../../../../src/app/components/lsdocstasks/sub-tasks/sub-tasks.component.html":
+/***/ (function(module, exports) {
+
+module.exports = "<div class=\"work-task-wrapper\">\r\n    <form *ngIf=\"false\">\r\n        <mat-form-field>\r\n            <input matInput readonly type=\"text\" placeholder=\"{{ 'Tasks.Name' | translate }}\" [(ngModel)]=\"task.Title\" name=\"Title\" #Title=\"ngModel\"  [disabled]=\"userRole == 'assignedTo'\">\r\n        </mat-form-field>\r\n        <mat-form-field *ngIf=\"task.TaskDescription\" class=\"example-full-width\">\r\n            <input matInput readonly type=\"text\" placeholder=\"{{ 'Tasks.Description' | translate }}\" [(ngModel)]=\"task.TaskDescription\" name=\"Description\" #Description=\"ngModel\" [disabled]=\"userRole == 'assignedTo'\">\r\n        </mat-form-field>\r\n        <mat-form-field>\r\n            <input matInput readonly type=\"text\" placeholder=\"{{ 'Tasks.StartDate' | translate }}\"  value=\"{{task.StartDate | date:'EEE, dd MMM' }}\"  [disabled]=\"userRole == 'assignedTo'\">\r\n        </mat-form-field>\r\n        <mat-form-field>\r\n            <input matInput readonly type=\"text\" placeholder=\"{{ 'Tasks.EndingDate' | translate }}\"  value=\"{{task.TaskDueDate | date:'EEE, dd MMM' }}\" [disabled]=\"userRole == 'assignedTo'\">\r\n        </mat-form-field>\r\n        <mat-form-field>\r\n                <!-- [(ngModel)]=\"task.OData__Status\" name=\"Status\" #Status=\"ngModel\" [disabled]=\"userRole == 'assignedTo'\" -->\r\n            <input matInput *ngIf=\"task.OData__Status == config.lsdocsStatuses.new\"  readonly type=\"text\" placeholder=\"{{ 'Tasks.Status' | translate }}\" value=\"{{ 'Tasks.New' | translate }}\" >\r\n            <input matInput *ngIf=\"task.OData__Status == config.lsdocsStatuses.inprogress\"  readonly type=\"text\" placeholder=\"{{ 'Tasks.Status' | translate }}\" value=\"{{ 'Tasks.InProgress' | translate }}\" >\r\n            <input matInput *ngIf=\"task.OData__Status == config.lsdocsStatuses.done\"  readonly type=\"text\" placeholder=\"{{ 'Tasks.Status' | translate }}\" value=\"{{ 'Tasks.Done' | translate }}\" >\r\n            <input matInput *ngIf=\"!task.OData__Status\"  readonly type=\"text\" placeholder=\"{{ 'Tasks.Status' | translate }}\" value=\"Unset status\" >\r\n        </mat-form-field>\r\n        <mat-form-field class=\"example-full-width\">\r\n            <textarea matInput rows=\"5\" placeholder=\"{{ 'LSDocs.Comment' | translate }}\" [(ngModel)]=\"comment\" name=\"Comment\" #Comment=\"ngModel\" [disabled]=\"userRole == 'assignedTo'\"></textarea>\r\n        </mat-form-field>\r\n        <button mat-raised-button color=\"primary\" type=\"submit\" class=\"lsdocsButtons\" *ngIf=\"task.OData__Status == config.lsdocsStatuses.new\" (click)=\"ProgressTask(task)\" >{{ 'LSDocs.ToWork' | translate }}</button>\r\n        <ng-container *ngIf=\"task.OData__Status != config.lsdocsStatuses.done && task.sysTaskLevel == 1\" >\r\n            <button mat-raised-button color=\"primary\" type=\"submit\" class=\"lsdocsButtons\" *ngIf=\"task.ContentType.Name == 'LSTaskAppruve' || task.ContentType.Name == 'LSTaskAgreement' \" (click)=\"DoneTask(task,'Back')\" >{{ 'LSDocs.Reject' | translate }}</button>\r\n            <button mat-raised-button color=\"primary\" type=\"submit\" class=\"lsdocsButtons\" *ngIf=\"task.ContentType.Name == 'LSTaskPreparetion' \" (click)=\"DoneTask(task,'RefuseTask')\" >{{ 'LSDocs.Cancel' | translate }}</button>        \r\n        </ng-container>\r\n        <button mat-raised-button color=\"primary\" type=\"submit\" class=\"lsdocsButtons\" *ngIf=\"task.OData__Status != config.lsdocsStatuses.done && task.ContentType.Name == 'LSTaskAppruve'\" (click)=\"DoneTask(task,'Done')\" >{{ 'LSDocs.Approve' | translate }}</button>\r\n        <button mat-raised-button color=\"primary\" type=\"submit\" class=\"lsdocsButtons\" *ngIf=\"task.OData__Status != config.lsdocsStatuses.done && task.ContentType.Name != 'LSTaskAppruve'\" (click)=\"DoneTask(task,'Done')\" >{{ 'LSDocs.Execute' | translate }}</button>\r\n    </form>\r\n    <div *ngIf=\"preloaderVisible == 'inactive' \" class='subtasks-container'>\r\n        <div *ngFor=\"let subtask of SubTasks\">\r\n            {{subtask.Title}}\r\n        </div>\r\n        <div *ngIf=\"SubTasks && SubTasks.length == 0\">\r\n            Empty;\r\n        </div>\r\n    </div>\r\n    <div *ngIf=\"this.preloaderVisible == 'active' \" class=\"ls-list-preloader\" [@preloaderState]=\"preloaderVisible\">\r\n        <mat-spinner style=\"margin: auto;\"></mat-spinner>\r\n    </div>     \r\n</div>"
+
+/***/ }),
+
+/***/ "../../../../../src/app/components/lsdocstasks/sub-tasks/sub-tasks.component.scss":
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, ".work-task-wrapper {\n  width: 100%;\n  /* padding: 20px; */ }\n\n.work-task-wrapper mat-form-field,\n.work-task-wrapper mat-select {\n  width: 100%; }\n\n.work-task-wrapper {\n  width: 100%;\n  height: 100%;\n  position: relative; }\n\n.work-task-wrapper .task-header {\n  padding: 30px;\n  /* height: 120px; */ }\n\n.work-task-wrapper .task-header .author-avatar {\n  background-position: center;\n  background-repeat: no-repeat;\n  background-size: cover;\n  background-color: grey;\n  width: 55px;\n  height: 55px;\n  border-radius: 50%;\n  display: inline-block;\n  margin-right: 11px;\n  outline: none !important; }\n\n.work-task-wrapper .task-header .author-info {\n  display: inline-block;\n  vertical-align: top;\n  max-width: 70%; }\n\n.work-task-wrapper .task-header .author-info .author-name {\n  font-weight: 600;\n  margin-top: 4px;\n  font-size: 19px;\n  color: #444;\n  text-decoration: none; }\n\n.work-task-wrapper .task-header .author-info .author-name:hover {\n  color: black; }\n\n.work-task-wrapper .task-header .author-info .task-created {\n  color: #7d7d7d;\n  font-size: 14px;\n  margin-top: 5px; }\n\n.work-task-wrapper .lsdocsButtons {\n  margin-top: 15px;\n  margin-right: 15px; }\n\n.task-body > > > form {\n  padding: 20px; }\n\n@media screen and (max-width: 768px) {\n  .work-task-wrapper .task-header {\n    padding: 25px 20px;\n    height: 90px; }\n  .work-task-wrapper .task-header .author-avatar {\n    width: 40px;\n    height: 40px; }\n  .work-task-wrapper .task-header .author-info .author-name {\n    font-size: 15px; }\n  .work-task-wrapper .task-header .author-info .task-created {\n    font-size: 13px; }\n  .work-task-wrapper .task-importance {\n    right: 5px; }\n  .work-task-wrapper .task-body {\n    height: calc(100% - 90px); }\n  .work-task-wrapper .task-body > > > .mat-tab-label {\n    height: 40px; } }\n", ""]);
+
+// exports
+
+
+/*** EXPORTS FROM exports-loader ***/
+module.exports = module.exports.toString();
+
+/***/ }),
+
+/***/ "../../../../../src/app/components/lsdocstasks/sub-tasks/sub-tasks.component.ts":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__("../../../core/esm5/core.js");
+var general_service_1 = __webpack_require__("../../../../../src/app/shared/general.service.ts");
+var event_emitter_service_1 = __webpack_require__("../../../../../src/app/shared/event-emitter.service.ts");
+var ng2_translate_1 = __webpack_require__("../../../../ng2-translate/index.js");
+var app_config_1 = __webpack_require__("../../../../../src/app/app.config.ts");
+var animations_1 = __webpack_require__("../../../animations/esm5/animations.js");
+var LSDocsSubTasks = /** @class */ (function () {
+    function LSDocsSubTasks(generalService, _eventEmitter, config, translate) {
+        this.generalService = generalService;
+        this._eventEmitter = _eventEmitter;
+        this.config = config;
+        this.translate = translate;
+        this.subscriptions = [];
+        this.eventEmitter = this._eventEmitter;
+        this.user = null;
+        this.userRole = null; //assignedTo';
+        this.comment = "";
+    }
+    LSDocsSubTasks.prototype.ngOnInit = function () {
+        var _this = this;
+        this.generalService.getCurrentUser().then(function (user) {
+            _this.user = user;
+        });
+        // this.subscriptions.push(this.eventEmitter.onTaskInfoOpen.subscribe((task) => {
+        //     if(task.Source != this.config.sources.lsdocs || !task.ExternalDoc.props)
+        //         return this.ngOnDestroy();
+        //     this.task = task.ExternalDoc.props;
+        //     this.updateView();
+        // }));
+        this.updateView();
+    };
+    LSDocsSubTasks.prototype.updateView = function () {
+        var _this = this;
+        this.preloaderVisible = 'active';
+        return this.getSubTasks().then(function () {
+            _this.preloaderVisible = 'inactive';
+        });
+    };
+    LSDocsSubTasks.prototype.getSubTasks = function () {
+        var _this = this;
+        return this.generalService.httpPost(this.config.serverAPIUrl + "/_api/lsdocs/subtasks/" + this.contentType, this.task)
+            .then(function (items) {
+            _this.SubTasks = items;
+        })
+            .catch(function (error) {
+            console.error('<Get Subtasks> error:', error);
+        });
+    };
+    LSDocsSubTasks.prototype.ngOnDestroy = function () {
+        this.subscriptions.forEach(function (subscription) {
+            subscription.unsubscribe();
+        });
+    };
+    __decorate([
+        core_1.Input(),
+        __metadata("design:type", Object)
+    ], LSDocsSubTasks.prototype, "task", void 0);
+    __decorate([
+        core_1.Input(),
+        __metadata("design:type", Object)
+    ], LSDocsSubTasks.prototype, "contentType", void 0);
+    LSDocsSubTasks = __decorate([
+        core_1.Component({
+            selector: 'lsdocs-subtasks',
+            template: __webpack_require__("../../../../../src/app/components/lsdocstasks/sub-tasks/sub-tasks.component.html"),
+            styles: [__webpack_require__("../../../../../src/app/components/lsdocstasks/sub-tasks/sub-tasks.component.scss")],
+            animations: [
+                animations_1.trigger('preloaderState', [
+                    animations_1.state('inactive', animations_1.style({
+                        opacity: '0',
+                        visibility: 'hidden'
+                    })),
+                    animations_1.state('active', animations_1.style({
+                        opacity: '1',
+                        visibility: 'visible'
+                    })),
+                    animations_1.transition('* => *', animations_1.animate('0ms ease-out')),
+                ])
+            ]
+        }),
+        __param(2, core_1.Inject(app_config_1.APP_CONFIG)),
+        __metadata("design:paramtypes", [general_service_1.GeneralService,
+            event_emitter_service_1.EventEmitterService, Object, ng2_translate_1.TranslateService])
+    ], LSDocsSubTasks);
+    return LSDocsSubTasks;
+}());
+exports.LSDocsSubTasks = LSDocsSubTasks;
+
+
+/***/ }),
+
 /***/ "../../../../../src/app/components/lsdocstasks/work-task/work-task.component.css":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1754,7 +1890,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, ".work-task-wrapper{\r\n    width: 100%;\r\n    padding: 20px;\r\n}\r\n.work-task-wrapper mat-form-field,\r\n.work-task-wrapper mat-select{\r\n    width: 100%;\r\n}\r\n\r\n.work-task-wrapper{\r\n    width: 100%;\r\n    height: 100%;\r\n    position: relative;\r\n}\r\n.work-task-wrapper .task-header{\r\n    padding: 30px;\r\n    /* height: 120px; */\r\n}\r\n.work-task-wrapper .task-header .author-avatar{\r\n    background-position: center;\r\n    background-repeat: no-repeat;\r\n    background-size: cover;\r\n    background-color: grey;\r\n    width: 55px;\r\n    height: 55px;\r\n    border-radius: 50%;\r\n    display: inline-block;\r\n    margin-right: 11px;\r\n    outline: none!important;\r\n}\r\n.work-task-wrapper .task-header .author-info{\r\n    display: inline-block;\r\n    vertical-align: top;\r\n    max-width: 70%;\r\n}\r\n.work-task-wrapper .task-header .author-info .author-name{\r\n    font-weight: 600;\r\n    margin-top: 4px;\r\n    font-size: 19px;\r\n    color: #444;\r\n    text-decoration: none;\r\n}\r\n.work-task-wrapper .task-header .author-info .author-name:hover{\r\n    color: black;\r\n}\r\n.work-task-wrapper .task-header .author-info .task-created{\r\n    color: #7d7d7d;\r\n    font-size: 14px;\r\n    margin-top: 5px;\r\n}\r\n.work-task-wrapper .lsdocsButtons{\r\n    margin-top: 15px;\r\n    margin-right: 15px;\r\n}\r\n@media screen and (max-width: 768px) {\r\n    .work-task-wrapper .task-header {\r\n        padding: 25px 20px;\r\n        height: 90px;\r\n    }\r\n    .work-task-wrapper .task-header .author-avatar{\r\n        width: 40px;\r\n        height: 40px;\r\n    }\r\n    .work-task-wrapper .task-header .author-info .author-name{\r\n        font-size: 15px;\r\n    }\r\n    .work-task-wrapper .task-header .author-info .task-created{\r\n        font-size: 13px;\r\n    }\r\n    .work-task-wrapper .task-importance{\r\n        right: 5px;\r\n    }\r\n    .work-task-wrapper .task-body{\r\n        height: calc(100% - 90px);\r\n    }\r\n    .work-task-wrapper .task-body >>> .mat-tab-label{\r\n        height: 40px;\r\n    }\r\n}", ""]);
+exports.push([module.i, ".work-task-wrapper{\r\n    width: 100%;\r\n    /* padding: 20px; */\r\n}\r\n.work-task-wrapper mat-form-field,\r\n.work-task-wrapper mat-select{\r\n    width: 100%;\r\n}\r\n\r\n.work-task-wrapper{\r\n    width: 100%;\r\n    height: 100%;\r\n    position: relative;\r\n}\r\n.work-task-wrapper .task-header{\r\n    padding: 30px;\r\n    /* height: 120px; */\r\n}\r\n.work-task-wrapper .task-header .author-avatar{\r\n    background-position: center;\r\n    background-repeat: no-repeat;\r\n    background-size: cover;\r\n    background-color: grey;\r\n    width: 55px;\r\n    height: 55px;\r\n    border-radius: 50%;\r\n    display: inline-block;\r\n    margin-right: 11px;\r\n    outline: none!important;\r\n}\r\n.work-task-wrapper .task-header .author-info{\r\n    display: inline-block;\r\n    vertical-align: top;\r\n    max-width: 70%;\r\n}\r\n.work-task-wrapper .task-header .author-info .author-name{\r\n    font-weight: 600;\r\n    margin-top: 4px;\r\n    font-size: 19px;\r\n    color: #444;\r\n    text-decoration: none;\r\n}\r\n.work-task-wrapper .task-header .author-info .author-name:hover{\r\n    color: black;\r\n}\r\n.work-task-wrapper .task-header .author-info .task-created{\r\n    color: #7d7d7d;\r\n    font-size: 14px;\r\n    margin-top: 5px;\r\n}\r\n.work-task-wrapper .lsdocsButtons{\r\n    margin-top: 15px;\r\n    margin-right: 15px;\r\n}\r\n\r\n.task-body >>> form{\r\n    padding:20px;\r\n}\r\n\r\n@media screen and (max-width: 768px) {\r\n    .work-task-wrapper .task-header {\r\n        padding: 25px 20px;\r\n        height: 90px;\r\n    }\r\n    .work-task-wrapper .task-header .author-avatar{\r\n        width: 40px;\r\n        height: 40px;\r\n    }\r\n    .work-task-wrapper .task-header .author-info .author-name{\r\n        font-size: 15px;\r\n    }\r\n    .work-task-wrapper .task-header .author-info .task-created{\r\n        font-size: 13px;\r\n    }\r\n    .work-task-wrapper .task-importance{\r\n        right: 5px;\r\n    }\r\n    .work-task-wrapper .task-body{\r\n        height: calc(100% - 90px);\r\n    }\r\n    .work-task-wrapper .task-body >>> .mat-tab-label{\r\n        height: 40px;\r\n    }\r\n}", ""]);
 
 // exports
 
@@ -1767,7 +1903,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/components/lsdocstasks/work-task/work-task.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"work-task-wrapper\">\r\n    <div class=\"task-header\">\r\n        <a class=\"author-avatar\" [ngStyle]=\"{'background-image': 'url(' + authorAvatarUrl + ')'}\" ></a>\r\n        <div class=\"author-info\">\r\n            <a class=\"author-name\">{{ task.TaskAuthore.Title }}</a>\r\n            <div class=\"task-created\">{{ 'LSDocs.Author' | translate  }}</div>\r\n        </div>\r\n    </div>\r\n    <div class=\"task-header\">\r\n        <a class=\"author-avatar\" [ngStyle]=\"{'background-image': 'url(' + assignedToAvatarUrl + ')'}\" ></a>\r\n        <div class=\"author-info\">\r\n            <a class=\"author-name\">{{ task.AssignedTo.Title }}</a>\r\n            <div class=\"task-created\">{{ 'LSDocs.Assigned' | translate }}</div>\r\n        </div>\r\n    </div>\r\n    <form > \r\n        <mat-form-field>\r\n            <input matInput readonly type=\"text\" placeholder=\"{{ 'Tasks.Name' | translate }}\" [(ngModel)]=\"task.Title\" name=\"Title\" #Title=\"ngModel\"  [disabled]=\"userRole == 'assignedTo'\">\r\n        </mat-form-field>\r\n        <mat-form-field *ngIf=\"task.TaskDescription\" class=\"example-full-width\">\r\n            <input matInput readonly type=\"text\" placeholder=\"{{ 'Tasks.Description' | translate }}\" [(ngModel)]=\"task.TaskDescription\" name=\"Description\" #Description=\"ngModel\" [disabled]=\"userRole == 'assignedTo'\">\r\n        </mat-form-field>\r\n        <mat-form-field>\r\n            <input matInput readonly type=\"text\" placeholder=\"{{ 'Tasks.StartDate' | translate }}\"  value=\"{{task.StartDate | date:'EEE, dd MMM' }}\"  [disabled]=\"userRole == 'assignedTo'\">\r\n        </mat-form-field>\r\n        <mat-form-field>\r\n            <input matInput readonly type=\"text\" placeholder=\"{{ 'Tasks.EndingDate' | translate }}\"  value=\"{{task.TaskDueDate | date:'EEE, dd MMM' }}\" [disabled]=\"userRole == 'assignedTo'\">\r\n        </mat-form-field>\r\n        <mat-form-field>\r\n                <!-- [(ngModel)]=\"task.OData__Status\" name=\"Status\" #Status=\"ngModel\" [disabled]=\"userRole == 'assignedTo'\" -->\r\n            <input matInput *ngIf=\"task.OData__Status == config.lsdocsStatuses.new\"  readonly type=\"text\" placeholder=\"{{ 'Tasks.Status' | translate }}\" value=\"{{ 'Tasks.New' | translate }}\" >\r\n            <input matInput *ngIf=\"task.OData__Status == config.lsdocsStatuses.inprogress\"  readonly type=\"text\" placeholder=\"{{ 'Tasks.Status' | translate }}\" value=\"{{ 'Tasks.InProgress' | translate }}\" >\r\n            <input matInput *ngIf=\"task.OData__Status == config.lsdocsStatuses.done\"  readonly type=\"text\" placeholder=\"{{ 'Tasks.Status' | translate }}\" value=\"{{ 'Tasks.Done' | translate }}\" >\r\n            <input matInput *ngIf=\"!task.OData__Status\"  readonly type=\"text\" placeholder=\"{{ 'Tasks.Status' | translate }}\" value=\"Unset status\" >\r\n        </mat-form-field>\r\n        <mat-form-field class=\"example-full-width\">\r\n            <textarea matInput rows=\"5\" placeholder=\"{{ 'LSDocs.Comment' | translate }}\" [(ngModel)]=\"comment\" name=\"Comment\" #Comment=\"ngModel\" [disabled]=\"userRole == 'assignedTo'\"></textarea>\r\n        </mat-form-field>\r\n        <button mat-raised-button color=\"primary\" type=\"submit\" class=\"lsdocsButtons\" *ngIf=\"task.OData__Status == config.lsdocsStatuses.new\" (click)=\"ProgressTask(task)\" >{{ 'LSDocs.ToWork' | translate }}</button>\r\n        <ng-container *ngIf=\"task.OData__Status != config.lsdocsStatuses.done && task.sysTaskLevel == 1\" >\r\n            <button mat-raised-button color=\"primary\" type=\"submit\" class=\"lsdocsButtons\" *ngIf=\"task.ContentType.Name == 'LSTaskAppruve' || task.ContentType.Name == 'LSTaskAgreement' \" (click)=\"DoneTask(task,'Back')\" >{{ 'LSDocs.Reject' | translate }}</button>\r\n            <button mat-raised-button color=\"primary\" type=\"submit\" class=\"lsdocsButtons\" *ngIf=\"task.ContentType.Name == 'LSTaskPreparetion' \" (click)=\"DoneTask(task,'RefuseTask')\" >{{ 'LSDocs.Cancel' | translate }}</button>        \r\n        </ng-container>\r\n        <button mat-raised-button color=\"primary\" type=\"submit\" class=\"lsdocsButtons\" *ngIf=\"task.OData__Status != config.lsdocsStatuses.done && task.ContentType.Name == 'LSTaskAppruve'\" (click)=\"DoneTask(task,'Done')\" >{{ 'LSDocs.Approve' | translate }}</button>\r\n        <button mat-raised-button color=\"primary\" type=\"submit\" class=\"lsdocsButtons\" *ngIf=\"task.OData__Status != config.lsdocsStatuses.done && task.ContentType.Name != 'LSTaskAppruve'\" (click)=\"DoneTask(task,'Done')\" >{{ 'LSDocs.Execute' | translate }}</button>\r\n    </form>\r\n</div>"
+module.exports = "<div class=\"work-task-wrapper\">\r\n    <div class=\"task-header\">\r\n        <a class=\"author-avatar\" [ngStyle]=\"{'background-image': 'url(' + authorAvatarUrl + ')'}\" ></a>\r\n        <div class=\"author-info\">\r\n            <a class=\"author-name\">{{ task.TaskAuthore.Title }}</a>\r\n            <div class=\"task-created\">{{ 'LSDocs.Author' | translate  }}</div>\r\n        </div>\r\n    </div>\r\n    <div class=\"task-header\">\r\n        <a class=\"author-avatar\" [ngStyle]=\"{'background-image': 'url(' + assignedToAvatarUrl + ')'}\" ></a>\r\n        <div class=\"author-info\">\r\n            <a class=\"author-name\">{{ task.AssignedTo.Title }}</a>\r\n            <div class=\"task-created\">{{ 'LSDocs.Assigned' | translate }}</div>\r\n        </div>\r\n    </div>\r\n    <mat-tab-group class=\"task-body\">\r\n        <mat-tab label=\"{{ 'Tasks.Details' | translate }}\">\r\n            <form > \r\n                <mat-form-field>\r\n                    <input matInput readonly type=\"text\" placeholder=\"{{ 'Tasks.Name' | translate }}\" [(ngModel)]=\"task.Title\" name=\"Title\" #Title=\"ngModel\"  [disabled]=\"userRole == 'assignedTo'\">\r\n                </mat-form-field>\r\n                <mat-form-field *ngIf=\"task.TaskDescription\" class=\"example-full-width\">\r\n                    <input matInput readonly type=\"text\" placeholder=\"{{ 'Tasks.Description' | translate }}\" [(ngModel)]=\"task.TaskDescription\" name=\"Description\" #Description=\"ngModel\" [disabled]=\"userRole == 'assignedTo'\">\r\n                </mat-form-field>\r\n                <mat-form-field>\r\n                    <input matInput readonly type=\"text\" placeholder=\"{{ 'Tasks.StartDate' | translate }}\"  value=\"{{task.StartDate | date:'EEE, dd MMM' }}\"  [disabled]=\"userRole == 'assignedTo'\">\r\n                </mat-form-field>\r\n                <mat-form-field>\r\n                    <input matInput readonly type=\"text\" placeholder=\"{{ 'Tasks.EndingDate' | translate }}\"  value=\"{{task.TaskDueDate | date:'EEE, dd MMM' }}\" [disabled]=\"userRole == 'assignedTo'\">\r\n                </mat-form-field>\r\n                <mat-form-field>\r\n                        <!-- [(ngModel)]=\"task.OData__Status\" name=\"Status\" #Status=\"ngModel\" [disabled]=\"userRole == 'assignedTo'\" -->\r\n                    <input matInput *ngIf=\"task.OData__Status == config.lsdocsStatuses.new\"  readonly type=\"text\" placeholder=\"{{ 'Tasks.Status' | translate }}\" value=\"{{ 'Tasks.New' | translate }}\" >\r\n                    <input matInput *ngIf=\"task.OData__Status == config.lsdocsStatuses.inprogress\"  readonly type=\"text\" placeholder=\"{{ 'Tasks.Status' | translate }}\" value=\"{{ 'Tasks.InProgress' | translate }}\" >\r\n                    <input matInput *ngIf=\"task.OData__Status == config.lsdocsStatuses.done\"  readonly type=\"text\" placeholder=\"{{ 'Tasks.Status' | translate }}\" value=\"{{ 'Tasks.Done' | translate }}\" >\r\n                    <input matInput *ngIf=\"!task.OData__Status\"  readonly type=\"text\" placeholder=\"{{ 'Tasks.Status' | translate }}\" value=\"Unset status\" >\r\n                </mat-form-field>\r\n                <mat-form-field class=\"example-full-width\">\r\n                    <textarea matInput rows=\"5\" placeholder=\"{{ 'LSDocs.Comment' | translate }}\" [(ngModel)]=\"comment\" name=\"Comment\" #Comment=\"ngModel\" [disabled]=\"userRole == 'assignedTo'\"></textarea>\r\n                </mat-form-field>\r\n                <button mat-raised-button color=\"primary\" type=\"submit\" class=\"lsdocsButtons\" *ngIf=\"task.OData__Status == config.lsdocsStatuses.new\" (click)=\"ProgressTask(task)\" >{{ 'LSDocs.ToWork' | translate }}</button>\r\n                <ng-container *ngIf=\"task.OData__Status != config.lsdocsStatuses.done && task.sysTaskLevel == 1\" >\r\n                    <button mat-raised-button color=\"primary\" type=\"submit\" class=\"lsdocsButtons\" *ngIf=\"task.ContentType.Name == 'LSTaskAppruve' || task.ContentType.Name == 'LSTaskAgreement' \" (click)=\"DoneTask(task,'Back')\" >{{ 'LSDocs.Reject' | translate }}</button>\r\n                    <button mat-raised-button color=\"primary\" type=\"submit\" class=\"lsdocsButtons\" *ngIf=\"task.ContentType.Name == 'LSTaskPreparetion' \" (click)=\"DoneTask(task,'RefuseTask')\" >{{ 'LSDocs.Cancel' | translate }}</button>        \r\n                </ng-container>\r\n                <button mat-raised-button color=\"primary\" type=\"submit\" class=\"lsdocsButtons\" *ngIf=\"task.OData__Status != config.lsdocsStatuses.done && task.ContentType.Name == 'LSTaskAppruve'\" (click)=\"DoneTask(task,'Done')\" >{{ 'LSDocs.Approve' | translate }}</button>\r\n                <button mat-raised-button color=\"primary\" type=\"submit\" class=\"lsdocsButtons\" *ngIf=\"task.OData__Status != config.lsdocsStatuses.done && task.ContentType.Name != 'LSTaskAppruve'\" (click)=\"DoneTask(task,'Done')\" >{{ 'LSDocs.Execute' | translate }}</button>\r\n            </form>\r\n        </mat-tab>\r\n        <mat-tab label=\"{{ 'Tasks.SubTasks' | translate }}\">\r\n           <lsdocs-subtasks [task]=\"task\" contentType=\"LSTest\" ></lsdocs-subtasks>\r\n        </mat-tab>\r\n        <mat-tab  label=\"{{ 'Tasks.Reassignment' | translate }}\"> <!-- *ngIf=\"task.ContentType.Name == 'LSTaskResolution' \" -->\r\n            <lsdocs-subtasks [task]=\"task\" contentType=\"LSTaskResolution\" ></lsdocs-subtasks>\r\n        </mat-tab>\r\n    </mat-tab-group>\r\n</div>"
 
 /***/ }),
 

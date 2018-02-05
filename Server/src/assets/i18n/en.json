@@ -86,6 +86,8 @@
         "InProgress" : "In progress",
         "Done" : "Done",
         "Details" : "Details",
+        "SubTasks" : "Sub-Tasks",
+        "Reassignment" : "Reassignment",
         "Discussion" : "Discussion",
         "Execute" : "Execute"
     },

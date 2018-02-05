@@ -97,6 +97,24 @@ exports.getWebUrl = function(req,res){
         })
 }
 
+exports.getSubTasks = (req,res) => {
+    let task = req.body;
+    let contentType = req.params.contentType;
+    let site = req.session.authLSDocs.siteUrl;
+
+    (contentType == "LSTaskResolution" ? 
+        lsdocsModel.getSubRezolutions(site,req.session.authLSDocs.access_token,task)
+      : lsdocsModel.getSubTasks(site,req.session.authLSDocs.access_token,task) 
+    )
+    .then( data => {
+        res.send(data.body ? (data.body.d ? data.body.d.results : data.body.d) : data.text );
+    })
+    .catch(error=>{
+        console.error('<LSDocsTasks> get sub tasks error:',error)
+        return res.status(500).json({error:'get sub tasks error',message: error });
+    })
+}
+
 exports.checkResolution = function(req,res){
     let site = req.session.authLSDocs.siteUrl;
     

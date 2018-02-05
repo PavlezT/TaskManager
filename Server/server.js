@@ -84,6 +84,7 @@ app.get('/_api/lsdocs/webUrl',[authHelper.checkAuth,lsdocsTasks.getWebUrl]); //g
 app.get('/_api/lsdocs/doc/props', [authLSDocs.checkAuth, lsdocsTasks.docProps]); // connected document properties
 app.get('/_api/lsdocs/doc/fields', [authLSDocs.checkAuth, lsdocsTasks.docFields]); // connected document contentType fields
 app.post('/_api/lsdocs/checkResolution',[authLSDocs.checkAuth, lsdocsTasks.checkResolution]);// check reassignmen Resolutions for this document
+app.post('/_api/lsdocs/subtasks/:contentType',[authLSDocs.checkAuth, lsdocsTasks.getSubTasks]);// check reassignmen Resolutions for this document
 app.post('/_api/lsdocs/subscribe',[authLSDocs.checkAuth,lsdocsTasks.subscription]);// set subscription on LSTasks list for WebHooks
 app.post('/_api/lsdocs/:id', [authLSDocs.checkAuth, lsdocsTasks.update]);//endpoint for New -> InProgress
 app.post('/_api/lsdocs/:id/:status', [authLSDocs.checkAuth, lsdocsTasks.update]); // endpoint for New/InProgress -> Done
