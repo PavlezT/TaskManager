@@ -60,7 +60,7 @@ function checkUser(req, res) {
 	]).then(([user,company]) => {
 		req.session.user = {};//userId : string, company : { _col : string, _docId : string }, admin : boolean
 		req.session.user.displayName = user.body.displayName;
-		req.session.user.email = user.body.mail || user.body.userPrincipalName;
+		req.session.user.email = user.body.userPrincipalName || user.body.mail;
 		return userController.ensureCompany(req,company.value[0],user.body);
 	}).then(transitData => {
 		return (transitData.created ? userController.createCompanyCollections(transitData) : Promise.resolve(transitData));
