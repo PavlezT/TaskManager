@@ -16,7 +16,7 @@ exports.userCompany = (req, res) => {
         .then(company => {
             res.send(company);
         })
-        .catch(error => {
+        .catch(err => {
             loggerHelper.logger.log('error', 'Query error: %s', err);
             res.sendStatus(500);
         });
