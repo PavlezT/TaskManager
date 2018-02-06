@@ -17,14 +17,14 @@ exports.collections = (req, res) => {
     var companyId = req.session.user.company._docId;
     generalModel.collections(companyId)
         .then(collections => {
-            collections = collections.map(col=>{
+            collections = collections.map(col => {
                 return {
                     name: col.name.includes(companyId) ? col.name.replace(companyId,"") : col.name
                 }
             });
             res.send(collections);
         })
-        .catch(err =>{
+        .catch(err => {
             loggerHelper.logger.log('error', 'Query error: %s', err);
             return res.sendStatus(500);
         });
@@ -101,7 +101,7 @@ exports.update = (req, res) => {
             loggerHelper.logger.log('verbose', 'Element %s from col %s was modified by user %s', req.params.id, req.params.collection, req.session.user.userId);
             res.sendStatus(200);
         })
-        .catch(err =>{
+        .catch(err => {
             loggerHelper.logger.log('error', 'Query error: %s', err);
             return res.sendStatus(500);
         })
