@@ -103,7 +103,7 @@ exports.getSubTasks = (req,res) => {
     let site = req.session.authLSDocs.siteUrl;
 
     (contentType == "LSTaskResolution" ? 
-        lsdocsModel.getSubRezolutions(site,req.session.authLSDocs.access_token,task)
+        lsdocsModel.getSubResolutions(site,req.session.authLSDocs.access_token,task)
       : lsdocsModel.getSubTasks(site,req.session.authLSDocs.access_token,task) 
     )
     .then( data => {

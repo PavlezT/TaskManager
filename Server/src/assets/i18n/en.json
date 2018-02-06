@@ -81,6 +81,8 @@
         "EndingDate" : "Date of completion",
         "Deadline" : "Deadline",
         "NewTask" : "New task",
+        "NewResolution" : "New reassignment",
+        "successAdded" : "successfully added",
         "Status" : "Status",
         "New" : "New",
         "InProgress" : "In progress",

@@ -43,11 +43,20 @@ export class LSDocsSubTasks implements OnInit {
     subscriptions: Array<Subscription>;
     eventEmitter: any;
     user: any;
+    users: Array<any>;
+    filteredUsers : Array<any>;
     userRole: string;
-    comment : string;
+    datePipe : DatePipe;
 
+    revealedForm : boolean;
+    minDate : Date;
+
+    loc : any;
     SubTasks : Array<any>;
     preloaderVisible : string;
+    newTaskTitle : string;
+    newTaskDueDate : Date;
+    newTaskAssignedTo : string;
     
     constructor (
         public generalService: GeneralService, 
@@ -59,19 +68,33 @@ export class LSDocsSubTasks implements OnInit {
         this.eventEmitter = this._eventEmitter;
         this.user = null;        
         this.userRole = null; //assignedTo';
-        this.comment = "";
+        this.revealedForm = false;
+        this.minDate = new Date(Date.now());
+        this.minDate.setHours(0);
+        this.minDate.setMinutes(0);
+        this.minDate.setSeconds(0);
+        this.minDate.setMilliseconds(0);
+        this.datePipe = new DatePipe(this.translate.currentLang);
     }
 
     ngOnInit () {
         this.generalService.getCurrentUser().then(user => {
             this.user = user;
         })
-        // this.subscriptions.push(this.eventEmitter.onTaskInfoOpen.subscribe((task) => {
-        //     if(task.Source != this.config.sources.lsdocs || !task.ExternalDoc.props)
-        //         return this.ngOnDestroy();
-        //     this.task = task.ExternalDoc.props;
-        //     this.updateView();
-        // }));
+        this.generalService.httpGet(`${this.generalService.serverAPIUrl}/_api/Users?select=_id,Name`).then(users => {
+            this.users = users;
+        });
+        this.subscriptions.push(this.eventEmitter.onTaskInfoOpen.subscribe((task) => {
+            if(task.Source != this.config.sources.lsdocs || !task.ExternalDoc.props){
+              return this.ngOnDestroy();
+            } 
+            this.revealedForm = false;
+            this.newTaskTitle = '';
+            this.newTaskDueDate = null;
+            this.newTaskAssignedTo = '';
+            this.updateView();
+        }));
+        this.translate.getTranslation(this.translate.currentLang).toPromise().then(loc => this.loc = loc);
         this.updateView();  
     }
 
@@ -86,13 +109,80 @@ export class LSDocsSubTasks implements OnInit {
     public getSubTasks() : Promise<any> { 
         return this.generalService.httpPost(`${this.config.serverAPIUrl}/_api/lsdocs/subtasks/${this.contentType}`,this.task)
             .then(items => {
-                this.SubTasks = items;
+                this.SubTasks = items.filter(item => {
+                    item.DueDate_view = this.datePipe.transform(item.TaskDueDate,"EE, dd MMMM");
+                    if(this.task.Id != item.sysIDParentMainTask && (this.contentType != "LSTaskResolution") )
+                        return false;
+                    return item;
+                });
             })
             .catch(error => {
                 console.error('<Get Subtasks> error:',error);
             })
     }
 
+    public addNewSubTask() : any {
+        let user;
+        if( !(this.newTaskAssignedTo && this.newTaskAssignedTo.trim().length > 0 ) )
+            return false;
+        if( !(this.newTaskTitle && this.newTaskTitle.trim().length > 0) )
+            return false;
+        if( !(this.newTaskDueDate && this.newTaskDueDate >= this.minDate ) )
+            return false;
+
+        this.users.map(item=>{
+            if(item.Name == this.newTaskAssignedTo)
+                user = item;
+        })
+
+        if( !user )
+            return false;
+
+        this.createSubTask()
+            .then(()=>{
+                this.revealedForm = false;
+                this.SubTasks.push({
+                    Title : this.newTaskTitle,
+                    AssignedTo :  {
+                        EMail : user.Name,
+                        Title : user.Name
+                    },
+                    TaskAuthore : {
+                        EMail : this.user.Email,
+                        Title : this.user.Name
+                    },
+                    DueDate_view : this.datePipe.transform(this.newTaskDueDate,"EE, dd MMMM")
+                });
+                
+                this.newTaskTitle = '';
+                this.newTaskDueDate = null;
+                this.newTaskAssignedTo = '';
+                
+                this.generalService.showNotification(`<p>${this.loc.Tasks[this.contentType == "LSTaskResolution" ? 'NewResolution' : 'NewTask']} ${this.loc.Tasks.successAdded}</p>`, 3000);
+            })
+    }
+
+    private createSubTask() : Promise<any> {
+        return Promise.resolve();
+    }
+    
+    onPeoplepickerValueChange() {
+        if ((this.newTaskAssignedTo != null)&&(this.newTaskAssignedTo.length > 0)) {
+            this.filteredUsers = this.users.filter(user => user.Name.toLowerCase().indexOf(this.newTaskAssignedTo.toLowerCase()) === 0);
+        } else {
+            this.filteredUsers = [];
+        }
+    }
+
+    validatePeoplepicker (event, editTaskForm) {
+        if ((this.newTaskAssignedTo != null)&&(this.newTaskAssignedTo.length > 0)) {
+            if (this.users.filter(user => user.Name == this.newTaskAssignedTo).length != 1) {
+                editTaskForm.form.controls.AssignedTo.setErrors({'incorrect': true});
+            }
+        } else {
+            editTaskForm.form.controls.AssignedTo.setErrors({'incorrect': true});
+        }
+    }
 
     ngOnDestroy () {
         this.subscriptions.forEach((subscription: Subscription) => {

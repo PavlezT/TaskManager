@@ -1,61 +1,104 @@
 .work-task-wrapper{
     width: 100%;
-    /* padding: 20px; */
-}
-.work-task-wrapper mat-form-field,
-.work-task-wrapper mat-select{
-    width: 100%;
-}
-
-.work-task-wrapper{
-    width: 100%;
+    padding: 20px;
     height: 100%;
     position: relative;
-}
-.work-task-wrapper .task-header{
-    padding: 30px;
-    /* height: 120px; */
-}
-.work-task-wrapper .task-header .author-avatar{
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-color: grey;
-    width: 55px;
-    height: 55px;
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 11px;
-    outline: none!important;
-}
-.work-task-wrapper .task-header .author-info{
-    display: inline-block;
-    vertical-align: top;
-    max-width: 70%;
-}
-.work-task-wrapper .task-header .author-info .author-name{
-    font-weight: 600;
-    margin-top: 4px;
-    font-size: 19px;
-    color: #444;
-    text-decoration: none;
-}
-.work-task-wrapper .task-header .author-info .author-name:hover{
-    color: black;
-}
-.work-task-wrapper .task-header .author-info .task-created{
-    color: #7d7d7d;
-    font-size: 14px;
-    margin-top: 5px;
-}
-.work-task-wrapper .lsdocsButtons{
-    margin-top: 15px;
-    margin-right: 15px;
+
+    mat-form-field, mat-select{
+        width: 100%;
+    }
+    
+    .task-header{
+        padding: 30px;
+        
+        .author-avatar{
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-color: grey;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 11px;
+            outline: none!important;
+        }
+
+        .author-info{
+            display: inline-block;
+            vertical-align: top;
+            max-width: 70%;
+
+             .author-name{
+                font-weight: 600;
+                margin-top: 4px;
+                font-size: 19px;
+                color: #444;
+                text-decoration: none;
+            }
+            
+            .author-name:hover{
+                color: black;
+            }
+            
+            .task-created{
+                color: #7d7d7d;
+                font-size: 14px;
+                margin-top: 5px;
+            }
+        }
+    }
+
+    .lsdocsButtons{
+        margin-top: 15px;
+        margin-right: 15px;
+    }
+
+    
+    .newTaskForm{
+        padding:0px !important; 
+    }
+
+    .openFormButton{
+        width:100%;
+        // background-color: rgba(100,100,100,0.4);
+    }
+
+    .subtasks-container{
+        margin-top: 5px;
+        margin-bottom: 10px;
+        font-size: 0.8rem;
+        div {
+            span{
+                color:grey;
+            }
+            .left{
+                 width: 45%;
+                 text-align: left;
+            }
+            .right{
+                 width: 45%;
+                 text-align: right;
+                 float: right;
+            }
+            label {
+                 font-weight: 500;
+                 font-size: 1rem;
+                 color: black;
+            }
+        }
+    }
+
+    .line{
+        width : 100%;
+        height : 5px;
+        border-radius: 100px;
+        margin-top: 15px;
+        margin-bottom: 15px;
+        background-color: darkcyan;
+    }
 }
 
-.task-body >>> form{
-    padding:20px;
-}
 
 @media screen and (max-width: 768px) {
     .work-task-wrapper .task-header {

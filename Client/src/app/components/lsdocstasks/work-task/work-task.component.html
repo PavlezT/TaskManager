@@ -50,7 +50,7 @@
         <mat-tab label="{{ 'Tasks.SubTasks' | translate }}">
            <lsdocs-subtasks [task]="task" contentType="LSTest" ></lsdocs-subtasks>
         </mat-tab>
-        <mat-tab  label="{{ 'Tasks.Reassignment' | translate }}"> <!-- *ngIf="task.ContentType.Name == 'LSTaskResolution' " -->
+        <mat-tab  label="{{ 'Tasks.Reassignment' | translate }}" *ngIf="task.ContentType.Name == 'LSTaskResolution' " >
             <lsdocs-subtasks [task]="task" contentType="LSTaskResolution" ></lsdocs-subtasks>
         </mat-tab>
     </mat-tab-group>

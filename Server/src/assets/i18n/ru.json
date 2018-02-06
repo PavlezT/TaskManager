@@ -81,6 +81,8 @@
         "EndingDate" : "Дата завершения",
         "Deadline" : "Срок выполнения",
         "NewTask" : "Новая задача",
+        "NewResolution" : "Новая резолюция",
+        "successAdded" : "успешно добавлена",
         "Status" : "Статус",
         "New" : "Новая",
         "InProgress" : "В работе",

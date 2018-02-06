@@ -1,41 +1,41 @@
 <div class="work-task-wrapper">
-    <form *ngIf="false">
+    <button *ngIf="!revealedForm" mat-button color="primary" class="openFormButton" (click)="revealedForm = !revealedForm" >{{ (contentType == "LSTaskResolution" ? 'Tasks.NewResolution' : 'Tasks.NewTask' ) | translate }}</button>
+    <form *ngIf="revealedForm" class="newTaskForm" #editTaskForm="ngForm">
         <mat-form-field>
-            <input matInput readonly type="text" placeholder="{{ 'Tasks.Name' | translate }}" [(ngModel)]="task.Title" name="Title" #Title="ngModel"  [disabled]="userRole == 'assignedTo'">
-        </mat-form-field>
-        <mat-form-field *ngIf="task.TaskDescription" class="example-full-width">
-            <input matInput readonly type="text" placeholder="{{ 'Tasks.Description' | translate }}" [(ngModel)]="task.TaskDescription" name="Description" #Description="ngModel" [disabled]="userRole == 'assignedTo'">
+            <input matInput type="text" placeholder="{{ 'Tasks.Name' | translate }}" [(ngModel)]="newTaskTitle" name="Title" #Title="ngModel"  [disabled]="userRole == 'assignedTo'">
         </mat-form-field>
         <mat-form-field>
-            <input matInput readonly type="text" placeholder="{{ 'Tasks.StartDate' | translate }}"  value="{{task.StartDate | date:'EEE, dd MMM' }}"  [disabled]="userRole == 'assignedTo'">
+            <input matInput type="text" placeholder="{{ 'Tasks.EndingDate' | translate }}" [matDatepicker]="dueDatePicker" [min]="minDate" [(ngModel)]="newTaskDueDate" name="DueDate" #DueDate="ngModel" [disabled]="userRole == 'assignedTo'">
+            <mat-datepicker-toggle matSuffix [for]="dueDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #dueDatePicker></mat-datepicker>
         </mat-form-field>
-        <mat-form-field>
-            <input matInput readonly type="text" placeholder="{{ 'Tasks.EndingDate' | translate }}"  value="{{task.TaskDueDate | date:'EEE, dd MMM' }}" [disabled]="userRole == 'assignedTo'">
+        <mat-form-field style="padding-top: 16px;">
+            <input matInput type="text" placeholder="{{ 'Tasks.Executor' | translate }}" (change)="validatePeoplepicker($event, editTaskForm)" (keyup)="onPeoplepickerValueChange($event)" [matAutocomplete]="userAuto" [(ngModel)]="newTaskAssignedTo" name="AssignedTo" #AssignedTo="ngModel" required>
+            <mat-autocomplete #userAuto="matAutocomplete">
+                <mat-option *ngFor="let user of filteredUsers" [value]="user.Name">
+                    {{ user.Name }}
+                </mat-option>
+            </mat-autocomplete>
         </mat-form-field>
-        <mat-form-field>
-                <!-- [(ngModel)]="task.OData__Status" name="Status" #Status="ngModel" [disabled]="userRole == 'assignedTo'" -->
-            <input matInput *ngIf="task.OData__Status == config.lsdocsStatuses.new"  readonly type="text" placeholder="{{ 'Tasks.Status' | translate }}" value="{{ 'Tasks.New' | translate }}" >
-            <input matInput *ngIf="task.OData__Status == config.lsdocsStatuses.inprogress"  readonly type="text" placeholder="{{ 'Tasks.Status' | translate }}" value="{{ 'Tasks.InProgress' | translate }}" >
-            <input matInput *ngIf="task.OData__Status == config.lsdocsStatuses.done"  readonly type="text" placeholder="{{ 'Tasks.Status' | translate }}" value="{{ 'Tasks.Done' | translate }}" >
-            <input matInput *ngIf="!task.OData__Status"  readonly type="text" placeholder="{{ 'Tasks.Status' | translate }}" value="Unset status" >
-        </mat-form-field>
-        <mat-form-field class="example-full-width">
-            <textarea matInput rows="5" placeholder="{{ 'LSDocs.Comment' | translate }}" [(ngModel)]="comment" name="Comment" #Comment="ngModel" [disabled]="userRole == 'assignedTo'"></textarea>
-        </mat-form-field>
-        <button mat-raised-button color="primary" type="submit" class="lsdocsButtons" *ngIf="task.OData__Status == config.lsdocsStatuses.new" (click)="ProgressTask(task)" >{{ 'LSDocs.ToWork' | translate }}</button>
-        <ng-container *ngIf="task.OData__Status != config.lsdocsStatuses.done && task.sysTaskLevel == 1" >
-            <button mat-raised-button color="primary" type="submit" class="lsdocsButtons" *ngIf="task.ContentType.Name == 'LSTaskAppruve' || task.ContentType.Name == 'LSTaskAgreement' " (click)="DoneTask(task,'Back')" >{{ 'LSDocs.Reject' | translate }}</button>
-            <button mat-raised-button color="primary" type="submit" class="lsdocsButtons" *ngIf="task.ContentType.Name == 'LSTaskPreparetion' " (click)="DoneTask(task,'RefuseTask')" >{{ 'LSDocs.Cancel' | translate }}</button>        
-        </ng-container>
-        <button mat-raised-button color="primary" type="submit" class="lsdocsButtons" *ngIf="task.OData__Status != config.lsdocsStatuses.done && task.ContentType.Name == 'LSTaskAppruve'" (click)="DoneTask(task,'Done')" >{{ 'LSDocs.Approve' | translate }}</button>
-        <button mat-raised-button color="primary" type="submit" class="lsdocsButtons" *ngIf="task.OData__Status != config.lsdocsStatuses.done && task.ContentType.Name != 'LSTaskAppruve'" (click)="DoneTask(task,'Done')" >{{ 'LSDocs.Execute' | translate }}</button>
+        <button mat-raised-button color="primary" type="submit" class="lsdocsButtons" (click)="addNewSubTask()" >{{ 'Save' | translate }}</button>
     </form>
-    <div *ngIf="preloaderVisible == 'inactive' " class='subtasks-container'>
-        <div *ngFor="let subtask of SubTasks">
-            {{subtask.Title}}
-        </div>
-        <div *ngIf="SubTasks && SubTasks.length == 0">
-            Empty;
+    <div *ngIf="revealedForm" class="line" ></div>
+    <div *ngIf="preloaderVisible == 'inactive' " >
+        <div *ngFor="let subtask of SubTasks" class='subtasks-container'>
+            <div>
+                <span class="left">
+                    {{subtask.TaskAuthore.Title}}
+                </span>
+                <span class="right">
+                    {{subtask.AssignedTo.Title}}
+                </span>
+            </div>
+            <div>
+                <span class="left"><label>{{subtask.Title}}</label></span>
+                <span class="right">
+                    {{subtask.DueDate_view}}
+                </span>
+            </div>
         </div>
     </div>
     <div *ngIf="this.preloaderVisible == 'active' " class="ls-list-preloader" [@preloaderState]="preloaderVisible">
