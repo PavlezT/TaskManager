@@ -1,5 +1,4 @@
 const request = require('superagent');
-const fs = require('fs');
 const configHelper = require('../helpers/config.js');
 const userController = require('../controllers/user');
 
@@ -25,7 +24,7 @@ function processToken(req, res) {
 			req.session.authInfo[accessTokenInfo.resource] = accessTokenInfo;
 			req.session.authInfo[accessTokenInfo.resource].created = new Date(Date.now());
 			if (accessTokenInfo.resource == 'https://graph.microsoft.com/') {
-				checkUser(req, res);
+				userController.checkUser(req, res);
 			} else {
 				res.redirect('/');	
 			}
@@ -51,44 +50,6 @@ function getAccessToken(authCode) {
 				throw err;
 			return res.body;
 		});
-}
-
-function checkUser(req, res) {
-	Promise.all([ 
-		getUserData(req.session.authInfo['https://graph.microsoft.com/'].access_token),
-		getUserCompany(req.session.authInfo['https://graph.microsoft.com/'].access_token)
-	]).then(([user,company]) => {
-		req.session.user = {};//userId : string, company : { _col : string, _docId : string }, admin : boolean
-		req.session.user.displayName = user.body.displayName;
-		req.session.user.email = user.body.userPrincipalName || user.body.mail;
-		return userController.ensureCompany(req,company.value[0],user.body);
-	}).then(transitData => {
-		return (transitData.created ? userController.createCompanyCollections(transitData) : Promise.resolve(transitData));
-	}).then(({userInfo,created}) => {
-		return userController.ensureUser(req, created, userInfo);             
-	}).then(({ensuredUser, wasCreated}) => {
-		return (wasCreated == true ?
-			getProfilePhoto(req.session.authInfo['https://graph.microsoft.com/'].access_token)
-				.then(photoRes => { 
-					return new Promise((resolve,reject) => {
-						fs.writeFile(__dirname + '/../src/img/avatars/' + ensuredUser.Company._docId + '/' + ensuredUser._id + '.jpeg', photoRes,  "binary", 
-						(err) => {
-							if (err) 
-								return reject(err);
-							resolve();
-						});
-					});
-				})
-				.catch(error =>{
-					loggerHelper.logger.log('error', 'Auth error while gettings user photo: %s', err);
-				})
-			: Promise.resolve());
-	}).then(() => {
-		res.redirect('/');
-	}).catch(err => {
-		loggerHelper.logger.log('error', 'Auth error: %s', err);
-		return res.sendStatus(500);
-	});
 }
 
 function checkAuth(req, res, next) {
@@ -127,44 +88,6 @@ function checkAuth(req, res, next) {
 	}
 }
 
-function getUserData(accessToken) {
-	return request
-	  .get('https://graph.microsoft.com/beta/me')
-	  .set('Authorization', 'Bearer ' + accessToken)
-	  .then((res,err) =>{
-		  if(err)
-			  throw err;
-		  return res;
-	  });
-}
-
-function getUserCompany(accessToken) {
-  return request
-	  .get('https://graph.microsoft.com/beta/organization?$select=id,displayName,country,city,postalCode')
-	  .set('Authorization', 'Bearer ' + accessToken)
-	  .then( (res,err)=>{
-		  if(err)
-			  throw err;
-		  return res.body;
-	  })
-}
-
-function getProfilePhoto(accessToken) {
-  return request
-	  .get('https://graph.microsoft.com/beta/me/photo/$value')
-	  .set('Authorization', 'Bearer ' + accessToken)
-	  .set('Content-Type', 'image/jpg')
-	  .then( (res,err) => {
-		  if(err)
-			  throw err;
-		  return res.body;
-	  })
-}
-
-exports.getUserData = getUserData;
-exports.getProfilePhoto = getProfilePhoto;
 exports.getAuthUrl = getAuthUrl;
-exports.getAccessToken = getAccessToken;
-exports.getUserCompany = getUserCompany;
 exports.checkAuth = checkAuth;
 exports.processToken = processToken;
