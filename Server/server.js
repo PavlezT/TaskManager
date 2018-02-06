@@ -89,7 +89,6 @@ app.post('/_api/lsdocs/subscribe',[authLSDocs.checkAuth,lsdocsTasks.subscription
 app.post('/_api/lsdocs/:id', [authLSDocs.checkAuth, lsdocsTasks.update]);//endpoint for New -> InProgress
 app.post('/_api/lsdocs/:id/:status', [authLSDocs.checkAuth, lsdocsTasks.update]); // endpoint for New/InProgress -> Done
 
-// app.get('/_api/userCompany', [authHelper.checkAuth, userController.userCompany]); //not needed yet
 app.get('/_api/currentUser', [authHelper.checkAuth, userController.current]);
 app.get('/_api/collections', [authHelper.checkAuth, generalController.collections]);
 app.get('/_api/:collection', [authHelper.checkAuth, generalController.all]);
