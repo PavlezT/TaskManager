@@ -106,13 +106,26 @@ export class LSDocsSubTasks implements OnInit {
         })
     }
 
+    private getAvatar(email : string, dest_img : string ) : Promise<any> {
+        dest_img = "/src/img/logo.png";
+        return this.generalService.httpGet(`${this.generalService.serverAPIUrl}/_api/Users?select=Email,_id,Company&filter={"Email" :"${email}"}`)
+            .then((res) => {
+                res[0] && res[0]._id && ( dest_img = `/src/img/avatars/${ res[0].Company._docId }/${ res[0]._id }.jpeg` );
+            })
+    }
+
     public getSubTasks() : Promise<any> { 
         return this.generalService.httpPost(`${this.config.serverAPIUrl}/_api/lsdocs/subtasks/${this.contentType}`,this.task)
             .then(items => {
                 this.SubTasks = items.filter(item => {
-                    item.DueDate_view = this.datePipe.transform(item.TaskDueDate,"EE, dd MMMM");
                     if(this.task.Id != item.sysIDParentMainTask && (this.contentType != "LSTaskResolution") )
                         return false;
+                    
+                    item.DueDate_view = this.datePipe.transform(item.TaskDueDate,"EE, dd MMMM");
+                    item.assignedToAvatarUrl = '';
+                    item.authorAvatarUrl = '';
+                    this.getAvatar(item.AssignedTo.EMail,item.assignedToAvatarUrl)
+                    this.getAvatar(item.TaskAuthore.EMail,item.authorAvatarUrl)
                     return item;
                 });
             })
@@ -151,6 +164,8 @@ export class LSDocsSubTasks implements OnInit {
                         EMail : this.user.Email,
                         Title : this.user.Name
                     },
+                    assignedToAvatarUrl : '/src/img/avatars/5a3bb56815434f13388f5f43/5a3bb5c015434f13388f5f55.jpeg',
+                    authorAvatarUrl : '/src/img/avatars/5a3bb56815434f13388f5f43/5a3bb5c015434f13388f5f55.jpeg',
                     DueDate_view : this.datePipe.transform(this.newTaskDueDate,"EE, dd MMMM")
                 });
                 

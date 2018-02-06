@@ -68,23 +68,41 @@
         margin-top: 5px;
         margin-bottom: 10px;
         font-size: 0.8rem;
-        div {
-            span{
-                color:grey;
+
+        .user_avatar{
+            display: inline-block;
+            img{
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
             }
-            .left{
-                 width: 45%;
-                 text-align: left;
-            }
-            .right{
-                 width: 45%;
-                 text-align: right;
-                 float: right;
-            }
-            label {
-                 font-weight: 500;
-                 font-size: 1rem;
-                 color: black;
+        }
+
+        div.subtask-content {
+            display: inline-block;
+            vertical-align: top;
+            width: calc(100% - 110px);
+            padding: 5px 0px 5px 0px;
+            div{
+                display: inline-block;
+                width: 100%;
+                span{
+                    color:grey;
+                }
+                .left{
+                    width: 45%;
+                    text-align: left;
+                }
+                .right{
+                    width: 45%;
+                    text-align: right;
+                    float: right;
+                }
+                label {
+                    font-weight: 500;
+                    font-size: 1rem;
+                    color: black;
+                }
             }
         }
     }

@@ -22,20 +22,28 @@
     <div *ngIf="revealedForm" class="line" ></div>
     <div *ngIf="preloaderVisible == 'inactive' " >
         <div *ngFor="let subtask of SubTasks" class='subtasks-container'>
-            <div>
-                <span class="left">
-                    {{subtask.TaskAuthore.Title}}
-                </span>
-                <span class="right">
-                    {{subtask.AssignedTo.Title}}
-                </span>
+            <label class="user_avatar" >
+                <img [src]="subtask.authorAvatarUrl" />
+            </label>
+            <div class="subtask-content">
+                <div>
+                    <span class="left">
+                        {{subtask.TaskAuthore.Title}}
+                    </span>
+                    <span class="right">
+                        {{subtask.AssignedTo.Title}}
+                    </span>
+                </div>
+                <div>
+                    <span class="left"><label>{{subtask.Title}}</label></span>
+                    <span class="right">
+                        {{subtask.DueDate_view}}
+                    </span>
+                </div>
             </div>
-            <div>
-                <span class="left"><label>{{subtask.Title}}</label></span>
-                <span class="right">
-                    {{subtask.DueDate_view}}
-                </span>
-            </div>
+            <label class="user_avatar">
+                <img [src]="subtask.assignedToAvatarUrl" />
+            </label>
         </div>
     </div>
     <div *ngIf="this.preloaderVisible == 'active' " class="ls-list-preloader" [@preloaderState]="preloaderVisible">
