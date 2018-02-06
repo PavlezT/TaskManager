@@ -1,17 +1,15 @@
 ﻿const generalModel = require('../models/general');
 const loggerHelper = require('../helpers/logger.js');
 
-function checkColName(companyId,collection){
-
-    switch(collection){
+function checkColName(companyId, collection) {
+    switch (collection) {
         case "Companies":
             break;
         case "Subscriptions":
             break;
-        default :
-            collection = companyId+collection;
+        default:
+            collection = companyId + collection;
     }
-
     return collection;
 }
 
@@ -21,15 +19,15 @@ exports.collections = (req, res) => {
         .then(collections => {
             collections = collections.map(col=>{
                 return {
-                    name : ( col.name.includes(companyId) ? col.name.replace(companyId,"") : col.name )
+                    name: col.name.includes(companyId) ? col.name.replace(companyId,"") : col.name
                 }
-            })
+            });
             res.send(collections);
         })
         .catch(err =>{
             loggerHelper.logger.log('error', 'Query error: %s', err);
             return res.sendStatus(500);
-        })
+        });
 };
 
 exports.all = (req, res) => {
@@ -40,16 +38,16 @@ exports.all = (req, res) => {
         skip: req.query.skip,
         filter: req.query.filter,
         expand: req.query.expand,
-        CompanyId : req.session.user.company._docId
+        CompanyId: req.session.user.company._docId
     };
     generalModel.all(checkColName(queryParams.CompanyId,req.params.collection), queryParams)
         .then(docs => {
             res.send(docs);
         })
-        .catch( err =>{
+        .catch(err => {
             loggerHelper.logger.log('error', 'Query error: %s', err);
             return res.sendStatus(500);
-        })
+        });
 };
 
 exports.allKeys = (req, res) => {
@@ -57,7 +55,7 @@ exports.allKeys = (req, res) => {
         .then(keys => {
             res.send(keys);
         })
-        .catch(err =>{
+        .catch(err => {
             loggerHelper.logger.log('error', 'Query error: %s', err);
             return res.sendStatus(500);
         })
@@ -66,7 +64,7 @@ exports.allKeys = (req, res) => {
 exports.findById = (req, res) => {
     let queryParams = {
         expand: req.query.expand,
-        CompanyId : req.session.user.company._docId
+        CompanyId: req.session.user.company._docId
     };
     
     generalModel.findById(checkColName(queryParams.CompanyId,req.params.collection), req.params.id, queryParams)
@@ -85,7 +83,7 @@ exports.create = (req, res) => {
             loggerHelper.logger.log('verbose', 'Element %s from col %s was created by user %s', result.ops[0]._id, req.params.collection, req.session.user.userId);
             res.send(req.body);
         })
-        .catch(err =>{
+        .catch(err => {
             loggerHelper.logger.log('error', 'Query error: %s', err);
             return res.sendStatus(500);
         })
@@ -95,7 +93,7 @@ exports.update = (req, res) => {
     var body = req.body;
 
     if(req.params.collection.includes("Users") &&  req.params.id != req.session.user.userId && !req.session.user.admin ){
-        return res.status(401).json({error:'You do not have permission!'});
+        return res.status(401).json({error: 'You do not have permission!'});
     }
 
     generalModel.update(checkColName(req.session.user.company._docId,req.params.collection), req.params.id, body, req.session.user)
@@ -112,7 +110,7 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
 
     if (req.params.collection.includes("Users") && !req.session.user.Admin) {
-        return res.status(401).json({error:'You do not have permission!'});
+        return res.status(401).json({error: 'You do not have permission!'});
     }
 
     generalModel.delete(checkColName(req.session.user.company._docId,req.params.collection), req.params.id, req.session.user.company._docId)
@@ -120,8 +118,8 @@ exports.delete = (req, res) => {
             loggerHelper.logger.log('verbose', 'Element %s from col %s was deleted by user %s', req.params.id, req.params.collection, req.session.user.userId);
             res.sendStatus(200);
         })
-        .catch(err =>{
+        .catch(err => {
             loggerHelper.logger.log('error', 'Query error: %s', err);
             return res.sendStatus(500);
-        })
+        });
 }
