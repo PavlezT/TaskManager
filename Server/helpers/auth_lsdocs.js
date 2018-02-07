@@ -127,7 +127,7 @@ function checkAuth(req, res, next) {
     (req.body.siteUrl? Promise.resolve(req.body.siteUrl) : getSiteUrl(req.session.user)).then(site=>{
 
         if(!site || !(site.length > 1))
-            return res.status(500).json({error:'There is no siteUrl'});
+            return res.status(403).json({error:'There is no siteUrl'});
 
         if(req.session.authLSDocs){
             ((new Date(Date.now()) > (new Date(req.session.authLSDocs.access_expiry))) ?

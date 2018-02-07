@@ -15,6 +15,7 @@
     "PrevPage" : "Prev. page",
     "NextPage" : "Next page",
     "or" : "or",
+    "Error" : "There was an error",
     "SideBar" : {
         "Notifications" : "Notifications",
         "SiteContent" : "Site content",
@@ -114,6 +115,7 @@
         "Alert60" : "Task is completed",
         "Alert62" : "Task approval is received",       
         "Alert66" : "Task rejection is received",
-        "Alert67" : "reassigned the task"
+        "Alert67" : "reassigned the task",
+        "Alert68" : "Subtask is created"
     }
 }

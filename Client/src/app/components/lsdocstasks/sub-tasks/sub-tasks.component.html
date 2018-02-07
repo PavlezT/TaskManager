@@ -12,12 +12,12 @@
         <mat-form-field style="padding-top: 16px;">
             <input matInput type="text" placeholder="{{ 'Tasks.Executor' | translate }}" (change)="validatePeoplepicker($event, editTaskForm)" (keyup)="onPeoplepickerValueChange($event)" [matAutocomplete]="userAuto" [(ngModel)]="newTaskAssignedTo" name="AssignedTo" #AssignedTo="ngModel" required>
             <mat-autocomplete #userAuto="matAutocomplete">
-                <mat-option *ngFor="let user of filteredUsers" [value]="user.Name">
-                    {{ user.Name }}
+                <mat-option *ngFor="let user of filteredUsers" [value]="user.User1.Title">
+                    {{ user.User1.Title }}
                 </mat-option>
             </mat-autocomplete>
         </mat-form-field>
-        <button mat-raised-button color="primary" type="submit" class="lsdocsButtons" (click)="addNewSubTask()" >{{ 'Save' | translate }}</button>
+        <button mat-raised-button color="primary" type="submit" class="lsdocsButtons" (click)="addNewSubTask($event)" >{{ 'Save' | translate }}</button>
     </form>
     <div *ngIf="revealedForm" class="line" ></div>
     <div *ngIf="preloaderVisible == 'inactive' " >

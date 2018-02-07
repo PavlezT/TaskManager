@@ -69,6 +69,8 @@ export class ConnectedDoc implements OnInit, OnDestroy {
             'Source_0' : true,
             'RequestType_0' : true,
             'ContractType_0' : true,
+            'Status' : true,
+            'OData_Status' : true,
         }
     }
 

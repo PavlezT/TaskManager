@@ -1377,6 +1377,8 @@ var ConnectedDoc = /** @class */ (function () {
             'Source_0': true,
             'RequestType_0': true,
             'ContractType_0': true,
+            'Status': true,
+            'OData_Status': true,
         };
     }
     ConnectedDoc.prototype.ngOnInit = function () {
@@ -1751,7 +1753,7 @@ exports.LSDocsTasksComponent = LSDocsTasksComponent;
 /***/ "../../../../../src/app/components/lsdocstasks/sub-tasks/sub-tasks.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"work-task-wrapper\">\r\n    <button *ngIf=\"!revealedForm\" mat-button color=\"primary\" class=\"openFormButton\" (click)=\"revealedForm = !revealedForm\" >{{ (contentType == \"LSTaskResolution\" ? 'Tasks.NewResolution' : 'Tasks.NewTask' ) | translate }}</button>\r\n    <form *ngIf=\"revealedForm\" class=\"newTaskForm\" #editTaskForm=\"ngForm\">\r\n        <mat-form-field>\r\n            <input matInput type=\"text\" placeholder=\"{{ 'Tasks.Name' | translate }}\" [(ngModel)]=\"newTaskTitle\" name=\"Title\" #Title=\"ngModel\"  [disabled]=\"userRole == 'assignedTo'\">\r\n        </mat-form-field>\r\n        <mat-form-field>\r\n            <input matInput type=\"text\" placeholder=\"{{ 'Tasks.EndingDate' | translate }}\" [matDatepicker]=\"dueDatePicker\" [min]=\"minDate\" [(ngModel)]=\"newTaskDueDate\" name=\"DueDate\" #DueDate=\"ngModel\" [disabled]=\"userRole == 'assignedTo'\">\r\n            <mat-datepicker-toggle matSuffix [for]=\"dueDatePicker\"></mat-datepicker-toggle>\r\n            <mat-datepicker #dueDatePicker></mat-datepicker>\r\n        </mat-form-field>\r\n        <mat-form-field style=\"padding-top: 16px;\">\r\n            <input matInput type=\"text\" placeholder=\"{{ 'Tasks.Executor' | translate }}\" (change)=\"validatePeoplepicker($event, editTaskForm)\" (keyup)=\"onPeoplepickerValueChange($event)\" [matAutocomplete]=\"userAuto\" [(ngModel)]=\"newTaskAssignedTo\" name=\"AssignedTo\" #AssignedTo=\"ngModel\" required>\r\n            <mat-autocomplete #userAuto=\"matAutocomplete\">\r\n                <mat-option *ngFor=\"let user of filteredUsers\" [value]=\"user.Name\">\r\n                    {{ user.Name }}\r\n                </mat-option>\r\n            </mat-autocomplete>\r\n        </mat-form-field>\r\n        <button mat-raised-button color=\"primary\" type=\"submit\" class=\"lsdocsButtons\" (click)=\"addNewSubTask()\" >{{ 'Save' | translate }}</button>\r\n    </form>\r\n    <div *ngIf=\"revealedForm\" class=\"line\" ></div>\r\n    <div *ngIf=\"preloaderVisible == 'inactive' \" >\r\n        <div *ngFor=\"let subtask of SubTasks\" class='subtasks-container'>\r\n            <label class=\"user_avatar\" >\r\n                <img [src]=\"subtask.authorAvatarUrl\" />\r\n            </label>\r\n            <div class=\"subtask-content\">\r\n                <div>\r\n                    <span class=\"left\">\r\n                        {{subtask.TaskAuthore.Title}}\r\n                    </span>\r\n                    <span class=\"right\">\r\n                        {{subtask.AssignedTo.Title}}\r\n                    </span>\r\n                </div>\r\n                <div>\r\n                    <span class=\"left\"><label>{{subtask.Title}}</label></span>\r\n                    <span class=\"right\">\r\n                        {{subtask.DueDate_view}}\r\n                    </span>\r\n                </div>\r\n            </div>\r\n            <label class=\"user_avatar\">\r\n                <img [src]=\"subtask.assignedToAvatarUrl\" />\r\n            </label>\r\n        </div>\r\n    </div>\r\n    <div *ngIf=\"this.preloaderVisible == 'active' \" class=\"ls-list-preloader\" [@preloaderState]=\"preloaderVisible\">\r\n        <mat-spinner style=\"margin: auto;\"></mat-spinner>\r\n    </div>     \r\n</div>"
+module.exports = "<div class=\"work-task-wrapper\">\r\n    <button *ngIf=\"!revealedForm\" mat-button color=\"primary\" class=\"openFormButton\" (click)=\"revealedForm = !revealedForm\" >{{ (contentType == \"LSTaskResolution\" ? 'Tasks.NewResolution' : 'Tasks.NewTask' ) | translate }}</button>\r\n    <form *ngIf=\"revealedForm\" class=\"newTaskForm\" #editTaskForm=\"ngForm\">\r\n        <mat-form-field>\r\n            <input matInput type=\"text\" placeholder=\"{{ 'Tasks.Name' | translate }}\" [(ngModel)]=\"newTaskTitle\" name=\"Title\" #Title=\"ngModel\"  [disabled]=\"userRole == 'assignedTo'\">\r\n        </mat-form-field>\r\n        <mat-form-field>\r\n            <input matInput type=\"text\" placeholder=\"{{ 'Tasks.EndingDate' | translate }}\" [matDatepicker]=\"dueDatePicker\" [min]=\"minDate\" [(ngModel)]=\"newTaskDueDate\" name=\"DueDate\" #DueDate=\"ngModel\" [disabled]=\"userRole == 'assignedTo'\">\r\n            <mat-datepicker-toggle matSuffix [for]=\"dueDatePicker\"></mat-datepicker-toggle>\r\n            <mat-datepicker #dueDatePicker></mat-datepicker>\r\n        </mat-form-field>\r\n        <mat-form-field style=\"padding-top: 16px;\">\r\n            <input matInput type=\"text\" placeholder=\"{{ 'Tasks.Executor' | translate }}\" (change)=\"validatePeoplepicker($event, editTaskForm)\" (keyup)=\"onPeoplepickerValueChange($event)\" [matAutocomplete]=\"userAuto\" [(ngModel)]=\"newTaskAssignedTo\" name=\"AssignedTo\" #AssignedTo=\"ngModel\" required>\r\n            <mat-autocomplete #userAuto=\"matAutocomplete\">\r\n                <mat-option *ngFor=\"let user of filteredUsers\" [value]=\"user.User1.Title\">\r\n                    {{ user.User1.Title }}\r\n                </mat-option>\r\n            </mat-autocomplete>\r\n        </mat-form-field>\r\n        <button mat-raised-button color=\"primary\" type=\"submit\" class=\"lsdocsButtons\" (click)=\"addNewSubTask($event)\" >{{ 'Save' | translate }}</button>\r\n    </form>\r\n    <div *ngIf=\"revealedForm\" class=\"line\" ></div>\r\n    <div *ngIf=\"preloaderVisible == 'inactive' \" >\r\n        <div *ngFor=\"let subtask of SubTasks\" class='subtasks-container'>\r\n            <label class=\"user_avatar\" >\r\n                <img [src]=\"subtask.authorAvatarUrl\" />\r\n            </label>\r\n            <div class=\"subtask-content\">\r\n                <div>\r\n                    <span class=\"left\">\r\n                        {{subtask.TaskAuthore.Title}}\r\n                    </span>\r\n                    <span class=\"right\">\r\n                        {{subtask.AssignedTo.Title}}\r\n                    </span>\r\n                </div>\r\n                <div>\r\n                    <span class=\"left\"><label>{{subtask.Title}}</label></span>\r\n                    <span class=\"right\">\r\n                        {{subtask.DueDate_view}}\r\n                    </span>\r\n                </div>\r\n            </div>\r\n            <label class=\"user_avatar\">\r\n                <img [src]=\"subtask.assignedToAvatarUrl\" />\r\n            </label>\r\n        </div>\r\n    </div>\r\n    <div *ngIf=\"this.preloaderVisible == 'active' \" class=\"ls-list-preloader\" [@preloaderState]=\"preloaderVisible\">\r\n        <mat-spinner style=\"margin: auto;\"></mat-spinner>\r\n    </div>     \r\n</div>"
 
 /***/ }),
 
@@ -1763,7 +1765,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, ".work-task-wrapper {\n  width: 100%;\n  padding: 20px;\n  height: 100%;\n  position: relative; }\n  .work-task-wrapper mat-form-field, .work-task-wrapper mat-select {\n    width: 100%; }\n  .work-task-wrapper .task-header {\n    padding: 30px; }\n    .work-task-wrapper .task-header .author-avatar {\n      background-position: center;\n      background-repeat: no-repeat;\n      background-size: cover;\n      background-color: grey;\n      width: 55px;\n      height: 55px;\n      border-radius: 50%;\n      display: inline-block;\n      margin-right: 11px;\n      outline: none !important; }\n    .work-task-wrapper .task-header .author-info {\n      display: inline-block;\n      vertical-align: top;\n      max-width: 70%; }\n      .work-task-wrapper .task-header .author-info .author-name {\n        font-weight: 600;\n        margin-top: 4px;\n        font-size: 19px;\n        color: #444;\n        text-decoration: none; }\n      .work-task-wrapper .task-header .author-info .author-name:hover {\n        color: black; }\n      .work-task-wrapper .task-header .author-info .task-created {\n        color: #7d7d7d;\n        font-size: 14px;\n        margin-top: 5px; }\n  .work-task-wrapper .lsdocsButtons {\n    margin-top: 15px;\n    margin-right: 15px; }\n  .work-task-wrapper .newTaskForm {\n    padding: 0px !important; }\n  .work-task-wrapper .openFormButton {\n    width: 100%; }\n  .work-task-wrapper .subtasks-container {\n    margin-top: 5px;\n    margin-bottom: 10px;\n    font-size: 0.8rem; }\n    .work-task-wrapper .subtasks-container .user_avatar {\n      display: inline-block; }\n      .work-task-wrapper .subtasks-container .user_avatar img {\n        width: 40px;\n        height: 40px;\n        border-radius: 50%; }\n    .work-task-wrapper .subtasks-container div.subtask-content {\n      display: inline-block;\n      vertical-align: top;\n      width: calc(100% - 110px);\n      padding: 5px 0px 5px 0px; }\n      .work-task-wrapper .subtasks-container div.subtask-content div {\n        display: inline-block;\n        width: 100%; }\n        .work-task-wrapper .subtasks-container div.subtask-content div span {\n          color: grey; }\n        .work-task-wrapper .subtasks-container div.subtask-content div .left {\n          width: 45%;\n          text-align: left; }\n        .work-task-wrapper .subtasks-container div.subtask-content div .right {\n          width: 45%;\n          text-align: right;\n          float: right; }\n        .work-task-wrapper .subtasks-container div.subtask-content div label {\n          font-weight: 500;\n          font-size: 1rem;\n          color: black; }\n  .work-task-wrapper .line {\n    width: 100%;\n    height: 5px;\n    border-radius: 100px;\n    margin-top: 15px;\n    margin-bottom: 15px;\n    background-color: darkcyan; }\n\n@media screen and (max-width: 768px) {\n  .work-task-wrapper .task-header {\n    padding: 25px 20px;\n    height: 90px; }\n  .work-task-wrapper .task-header .author-avatar {\n    width: 40px;\n    height: 40px; }\n  .work-task-wrapper .task-header .author-info .author-name {\n    font-size: 15px; }\n  .work-task-wrapper .task-header .author-info .task-created {\n    font-size: 13px; }\n  .work-task-wrapper .task-importance {\n    right: 5px; }\n  .work-task-wrapper .task-body {\n    height: calc(100% - 90px); }\n  .work-task-wrapper .task-body > > > .mat-tab-label {\n    height: 40px; } }\n", ""]);
+exports.push([module.i, ".work-task-wrapper {\n  width: 100%;\n  padding: 20px;\n  height: 100%;\n  position: relative; }\n  .work-task-wrapper mat-form-field, .work-task-wrapper mat-select {\n    width: 100%; }\n  .work-task-wrapper .task-header {\n    padding: 30px; }\n    .work-task-wrapper .task-header .author-avatar {\n      background-position: center;\n      background-repeat: no-repeat;\n      background-size: cover;\n      background-color: grey;\n      width: 55px;\n      height: 55px;\n      border-radius: 50%;\n      display: inline-block;\n      margin-right: 11px;\n      outline: none !important; }\n    .work-task-wrapper .task-header .author-info {\n      display: inline-block;\n      vertical-align: top;\n      max-width: 70%; }\n      .work-task-wrapper .task-header .author-info .author-name {\n        font-weight: 600;\n        margin-top: 4px;\n        font-size: 19px;\n        color: #444;\n        text-decoration: none; }\n      .work-task-wrapper .task-header .author-info .author-name:hover {\n        color: black; }\n      .work-task-wrapper .task-header .author-info .task-created {\n        color: #7d7d7d;\n        font-size: 14px;\n        margin-top: 5px; }\n  .work-task-wrapper .lsdocsButtons {\n    margin-top: 15px;\n    margin-right: 15px; }\n  .work-task-wrapper .newTaskForm {\n    padding: 0px !important; }\n  .work-task-wrapper .openFormButton {\n    width: 100%; }\n  .work-task-wrapper .subtasks-container {\n    margin-top: 5px;\n    margin-bottom: 10px;\n    font-size: 0.8rem; }\n    .work-task-wrapper .subtasks-container .user_avatar {\n      display: inline-block; }\n      .work-task-wrapper .subtasks-container .user_avatar img {\n        width: 40px;\n        height: 40px;\n        border-radius: 50%; }\n    .work-task-wrapper .subtasks-container div.subtask-content {\n      display: inline-block;\n      vertical-align: top;\n      width: calc(100% - 110px);\n      padding: 5px 0px 5px 0px; }\n      .work-task-wrapper .subtasks-container div.subtask-content div {\n        display: inline-block;\n        width: 100%;\n        word-break: break-all; }\n        .work-task-wrapper .subtasks-container div.subtask-content div span {\n          color: grey; }\n        .work-task-wrapper .subtasks-container div.subtask-content div .left {\n          width: 45%;\n          text-align: left; }\n        .work-task-wrapper .subtasks-container div.subtask-content div .right {\n          width: 45%;\n          text-align: right;\n          float: right; }\n        .work-task-wrapper .subtasks-container div.subtask-content div label {\n          font-weight: 500;\n          font-size: 1rem;\n          color: black; }\n  .work-task-wrapper .line {\n    width: 100%;\n    height: 5px;\n    border-radius: 100px;\n    margin-top: 15px;\n    margin-bottom: 15px;\n    background-color: darkcyan; }\n\n@media screen and (max-width: 768px) {\n  .work-task-wrapper .task-header {\n    padding: 25px 20px;\n    height: 90px; }\n  .work-task-wrapper .task-header .author-avatar {\n    width: 40px;\n    height: 40px; }\n  .work-task-wrapper .task-header .author-info .author-name {\n    font-size: 15px; }\n  .work-task-wrapper .task-header .author-info .task-created {\n    font-size: 13px; }\n  .work-task-wrapper .task-importance {\n    right: 5px; }\n  .work-task-wrapper .task-body {\n    height: calc(100% - 90px); }\n  .work-task-wrapper .task-body > > > .mat-tab-label {\n    height: 40px; } }\n", ""]);
 
 // exports
 
@@ -1821,7 +1823,7 @@ var LSDocsSubTasks = /** @class */ (function () {
         this.generalService.getCurrentUser().then(function (user) {
             _this.user = user;
         });
-        this.generalService.httpGet(this.generalService.serverAPIUrl + "/_api/Users?select=_id,Name").then(function (users) {
+        this.getUsers().then(function (users) {
             _this.users = users;
         });
         this.subscriptions.push(this.eventEmitter.onTaskInfoOpen.subscribe(function (task) {
@@ -1844,11 +1846,20 @@ var LSDocsSubTasks = /** @class */ (function () {
             _this.preloaderVisible = 'inactive';
         });
     };
-    LSDocsSubTasks.prototype.getAvatar = function (email, dest_img) {
-        dest_img = "/src/img/logo.png";
+    LSDocsSubTasks.prototype.getAvatar = function (email, dest_img, key) {
+        dest_img[key] = "/src/img/logo.png";
         return this.generalService.httpGet(this.generalService.serverAPIUrl + "/_api/Users?select=Email,_id,Company&filter={\"Email\" :\"" + email + "\"}")
             .then(function (res) {
-            res[0] && res[0]._id && (dest_img = "/src/img/avatars/" + res[0].Company._docId + "/" + res[0]._id + ".jpeg");
+            res[0] && res[0]._id && (dest_img[key] = "/src/img/avatars/" + res[0].Company._docId + "/" + res[0]._id + ".jpeg");
+        });
+    };
+    LSDocsSubTasks.prototype.getUsers = function () {
+        return this.generalService.httpGet(this.config.serverAPIUrl + "/_api/lsdocs/users")
+            .then(function (items) {
+            return items;
+        })
+            .catch(function (error) {
+            console.error('<Get Users> error:', error);
         });
     };
     LSDocsSubTasks.prototype.getSubTasks = function () {
@@ -1861,8 +1872,8 @@ var LSDocsSubTasks = /** @class */ (function () {
                 item.DueDate_view = _this.datePipe.transform(item.TaskDueDate, "EE, dd MMMM");
                 item.assignedToAvatarUrl = '';
                 item.authorAvatarUrl = '';
-                _this.getAvatar(item.AssignedTo.EMail, item.assignedToAvatarUrl);
-                _this.getAvatar(item.TaskAuthore.EMail, item.authorAvatarUrl);
+                _this.getAvatar(item.AssignedTo.EMail, item, 'assignedToAvatarUrl');
+                _this.getAvatar(item.TaskAuthore.EMail, item, 'authorAvatarUrl');
                 return item;
             });
         })
@@ -1870,7 +1881,7 @@ var LSDocsSubTasks = /** @class */ (function () {
             console.error('<Get Subtasks> error:', error);
         });
     };
-    LSDocsSubTasks.prototype.addNewSubTask = function () {
+    LSDocsSubTasks.prototype.addNewSubTask = function ($event) {
         var _this = this;
         var user;
         if (!(this.newTaskAssignedTo && this.newTaskAssignedTo.trim().length > 0))
@@ -1880,41 +1891,116 @@ var LSDocsSubTasks = /** @class */ (function () {
         if (!(this.newTaskDueDate && this.newTaskDueDate >= this.minDate))
             return false;
         this.users.map(function (item) {
-            if (item.Name == _this.newTaskAssignedTo)
+            if (item.User1.Title == _this.newTaskAssignedTo)
                 user = item;
         });
         if (!user)
             return false;
-        this.createSubTask()
+        user.assignTo = {
+            Title: user.User1.Title,
+            EMail: user.User1.EMail,
+            Id: user.User1.Id
+        };
+        if ((user.AbsenceStart) || (user.AbsenceEnd)) {
+            var isDeputyUse = (((new Date(Date.now())) >= (new Date(user.AbsenceStart.split('.').reverse().join('.')))) && ((new Date(Date.now())) <= (new Date(user.AbsenceEnd.split('.').reverse().join('.'))))) ? true : false;
+            if (isDeputyUse && user.Deputy && user.Deputy.EMail) {
+                user.assignTo.Title = user.Deputy.Title;
+                user.assignTo.EMail = user.Deputy.EMail;
+                user.assignTo.Id = user.Deputy.Id;
+            }
+        }
+        var TaskData = {
+            task: {
+                '__metadata': {
+                    type: "SP.Data.LSTasksListItem"
+                },
+                sysIDItem: this.task.sysIDItem,
+                sysIDList: this.task.sysIDList,
+                sysIDMainTask: (this.contentType == 'LSTaskResolution' ? 0 : (this.task.sysIDMainTask == 0 ? this.task.Id : this.task.sysIDMainTask)).toString(),
+                sysIDParentMainTask: (this.contentType == 'LSTaskResolution' ? '0' : (this.task.Id).toString()),
+                Title: this.newTaskTitle.trim().replace(':', ' '),
+                StateID: this.task.StateID,
+                sysTaskLevel: (parseInt(this.task.sysTaskLevel || '0') + 1).toString(),
+                TaskDescription: null,
+                TaskDueDate: this.datePipe.transform(this.newTaskDueDate, 'yyyy-MM-ddTHH:mm:ss').toString() + 'Z',
+                EstimatePlan: null,
+                TaskAuthoreId: this.task.AssignedToId,
+                TaskAuthorEmail: this.user.Email,
+                AssignetToTitle: user.assignTo.Title,
+                AssignetToEmail: user.assignTo.EMail,
+                AssignedToId: user.assignTo.Id,
+                AssignedManagerId: user.UserManager.Id,
+                DepartmentOfUser: user.ol_Department,
+                OData__Status: 'Not Started',
+            },
+            itemData: {
+                ItemId: this.task.sysIDItem,
+                ListID: this.task.sysIDList,
+                ItemTitle: "-",
+                ListTitle: "-",
+                EventType: 'Task'
+            },
+            HistoryArray: [{
+                    EventType: (this.contentType != 'LSTaskResolution' ? 'EventCreateTask EventAddTask' : 'EventCreateTask'),
+                    Event: this.loc.LSDocs.Alert68,
+                    NameExecutor: user.assignTo.Title,
+                    NameAuthore: this.task.AssignedTo.Title,
+                    TaskTitle: this.newTaskTitle.trim(),
+                    StartDate: this.datePipe.transform(Date.now(), 'dd.MM.yyyy HH:mm:ss'),
+                    DueDate: this.newTaskDueDate.toLocaleDateString(),
+                    EvanteDate: this.datePipe.transform(Date.now(), 'yyyy-MM-dd HH:mm:ss'),
+                    Comments: '',
+                    ExecutorEmail: user.assignTo.EMail,
+                    AthoreEmail: this.user.Email,
+                    ItemId: this.task.sysIDItem,
+                    ListID: this.task.sysIDList
+                }]
+        };
+        $event.target.parentNode.disabled = true;
+        this.createSubTask(TaskData)
             .then(function () {
             _this.revealedForm = false;
-            _this.SubTasks.push({
+            var newTask = {
                 Title: _this.newTaskTitle,
                 AssignedTo: {
-                    EMail: user.Name,
-                    Title: user.Name
+                    EMail: user.assignTo.EMail,
+                    Title: user.assignTo.Title
                 },
                 TaskAuthore: {
                     EMail: _this.user.Email,
                     Title: _this.user.Name
                 },
-                assignedToAvatarUrl: '/src/img/avatars/5a3bb56815434f13388f5f43/5a3bb5c015434f13388f5f55.jpeg',
-                authorAvatarUrl: '/src/img/avatars/5a3bb56815434f13388f5f43/5a3bb5c015434f13388f5f55.jpeg',
+                assignedToAvatarUrl: '',
+                authorAvatarUrl: '',
                 DueDate_view: _this.datePipe.transform(_this.newTaskDueDate, "EE, dd MMMM")
-            });
+            };
+            _this.getAvatar(newTask.AssignedTo.EMail, newTask, 'assignedToAvatarUrl');
+            _this.getAvatar(newTask.TaskAuthore.EMail, newTask, 'authorAvatarUrl');
+            _this.SubTasks.push(newTask);
             _this.newTaskTitle = '';
             _this.newTaskDueDate = null;
             _this.newTaskAssignedTo = '';
+            $event.target.parentNode.disabled = false;
             _this.generalService.showNotification("<p>" + _this.loc.Tasks[_this.contentType == "LSTaskResolution" ? 'NewResolution' : 'NewTask'] + " " + _this.loc.Tasks.successAdded + "</p>", 3000);
+        })
+            .catch(function (error) {
+            console.error('<Set Subtasks> error:', error);
+            $event.target.parentNode.disabled = false;
+            _this.generalService.showNotification("<p>" + _this.loc.Error + " => \"" + _this.loc.Tasks[_this.contentType == "LSTaskResolution" ? 'NewResolution' : 'NewTask'] + "\"</p>", 6000);
         });
     };
-    LSDocsSubTasks.prototype.createSubTask = function () {
-        return Promise.resolve();
+    LSDocsSubTasks.prototype.createSubTask = function (newTask) {
+        return this.generalService.httpUpdate(this.config.serverAPIUrl + "/_api/lsdocs/subtasks/" + this.contentType, newTask)
+            .then(function (items) {
+            console.log('resp:', items);
+            if (items && items.hasOwnProperty('ok') && items.ok == false)
+                throw new Error('Subtask not added');
+        });
     };
     LSDocsSubTasks.prototype.onPeoplepickerValueChange = function () {
         var _this = this;
         if ((this.newTaskAssignedTo != null) && (this.newTaskAssignedTo.length > 0)) {
-            this.filteredUsers = this.users.filter(function (user) { return user.Name.toLowerCase().indexOf(_this.newTaskAssignedTo.toLowerCase()) === 0; });
+            this.filteredUsers = this.users.filter(function (user) { return user.User1.Title.toLowerCase().indexOf(_this.newTaskAssignedTo.toLowerCase()) === 0; });
         }
         else {
             this.filteredUsers = [];
@@ -1923,7 +2009,7 @@ var LSDocsSubTasks = /** @class */ (function () {
     LSDocsSubTasks.prototype.validatePeoplepicker = function (event, editTaskForm) {
         var _this = this;
         if ((this.newTaskAssignedTo != null) && (this.newTaskAssignedTo.length > 0)) {
-            if (this.users.filter(function (user) { return user.Name == _this.newTaskAssignedTo; }).length != 1) {
+            if (this.users.filter(function (user) { return user.User1.Title == _this.newTaskAssignedTo; }).length != 1) {
                 editTaskForm.form.controls.AssignedTo.setErrors({ 'incorrect': true });
             }
         }

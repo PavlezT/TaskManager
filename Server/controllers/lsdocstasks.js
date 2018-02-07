@@ -97,6 +97,21 @@ exports.getWebUrl = function(req,res){
         })
 }
 
+exports.getUsers = (req,res) => {
+    let site = req.session.authLSDocs.siteUrl;
+  
+    if(!req.session.user)
+        return res.status(500).json({error:'There is no user in session!'});
+    
+    lsdocsModel.getUsers(site,req.session.authLSDocs.access_token)
+        .then(data =>{
+            res.send(data.body ? (data.body.d ? data.body.d.results : data.body.d) : data.text );
+        })
+        .catch(err=>{
+            return res.status(500).json({error:'get Users list error',message: err });
+        })
+}
+
 exports.getSubTasks = (req,res) => {
     let task = req.body;
     let contentType = req.params.contentType;
@@ -113,6 +128,38 @@ exports.getSubTasks = (req,res) => {
         console.error('<LSDocsTasks> get sub tasks error:',error)
         return res.status(500).json({error:'get sub tasks error',message: error });
     })
+}
+
+exports.setSubTasks = (req,res) => {
+    let site = req.session.authLSDocs.siteUrl;
+    
+    let data = req.body;
+    let contentType = req.params.contentType;
+
+    if(!req.session.user)
+        return res.status(500).json({error:'There is no user in session!'});
+    if( !(data && data.task && data.itemData && data.HistoryArray) || !contentType )
+        return res.status(418).json({error:'Not all data presents!'});
+        
+    return lsdocsModel.getContentType(site,req.session.authLSDocs.access_token,(contentType == 'LSTaskResolution' ? 'LSResolutionTaskToDo' : 'LSSTaskAdd' ))
+        .then((contentType) =>{
+            data.task['ContentTypeId'] = contentType.body.d.results[0].Id.StringValue;
+            return lsdocsModel.createSubTask(site,req.session.authLSDocs.access_token,req.session.authLSDocs.digest,data.task);
+        })
+        .then((createdTask) => {
+            data.HistoryArray[0]['TaskID'] = createdTask.body.d.Id;
+            data.task['EventTypeUser'] = data.HistoryArray[0]['EventType'];
+            data.task['HistoryType'] = 'HistoryDataForUser';
+            data.task['itemData'] = data.itemData;
+            data.task['HistoryArray'] = data.HistoryArray;
+            return writeToHistoryAfterTaskGet(site,req.session.authLSDocs.access_token,req.session.authLSDocs.digest,data.task)
+        })
+        .then(()=>{
+            res.end(JSON.stringify({'status':'Ok'}));
+        })
+        .catch(err=>{
+            return res.status(500).json({error:'create subTask error',message: err });
+        })
 }
 
 exports.checkResolution = function(req,res){

@@ -87,6 +87,38 @@ exports.getWebUrl = function(access_token){
         })
 }
 
+exports.getUsers = function(site,access_token){
+    return request
+        .get(`${site}/_api/Web/Lists/GetByTitle('LSUsers')/items?`
+            +`$select=Id,Title,IDDepartment,ol_Department,JobTitle,UserManager/Id,UserManager/Title,UserManager/EMail,User1/Id,User1/Title,User1/EMail,Deputy/Id,Deputy/Title,Deputy/EMail,DeputyId,AbsenceStart,AbsenceEnd`
+            +`&$expand=UserManager,Deputy,User1`
+        )
+        .set({
+            'Accept': 'application/json; odata=verbose',
+            'Authorization': `Bearer ${access_token}`
+        })
+        .then((data,err) =>{
+            if(err)
+                throw err;
+            return data;
+        })
+}
+
+exports.getContentType = function(site,access_token,name){
+    return request
+        .get(`${site}/_api/Web/Lists/GetByTitle('LSTasks')/ContentTypes?$select=Name,Id&$filter=(Name eq '${name}')`
+        )
+        .set({
+            'Accept': 'application/json; odata=verbose',
+            'Authorization': `Bearer ${access_token}`
+        })
+        .then((data,err) =>{
+            if(err)
+                throw err;
+            return data;
+        })
+}
+
 exports.getSubTasks = function(site,access_token,doc){
     return request
         .get(`${site}/_api/Web/Lists/GetByTitle('LSTasks')/items?`
@@ -166,6 +198,25 @@ exports.docFields = function(site,access_token,listId,contentTypeId){
             'Accept': 'application/json; odata=verbose',
             'Authorization': `Bearer ${access_token}`
         })
+        .then((data,err) =>{
+            if(err)
+                throw err;
+            return data;
+        })
+}
+
+exports.createSubTask = (site,access_token,digest,data) => {
+    return request
+        .post(`${site}/_api/web/lists/getByTitle('LSTasks')/Items`)
+        .set({
+            'Accept': 'application/json; odata=verbose',
+            'Authorization': `Bearer ${access_token}`,
+            'X-RequestDigest': digest,
+            'X-HTTP-Method':'POST',
+            'IF-MATCH': '*',
+            'Content-Type': 'application/json;odata=verbose'
+        })
+        .send(data)
         .then((data,err) =>{
             if(err)
                 throw err;

@@ -1,6 +1,6 @@
 exports.config = {
     origin: process.env["Origin"] || "http://localhost:3000",
-    dbConnectionString: process.env["DBConnectionString"] || "mongodb://dbUser:qwer1234@ds046037.mlab.com:46037/taskmanagertest",//ds145379//.mlab.com:45379/tasksdb", 
+    dbConnectionString: process.env["DBConnectionString"] || "ds145379//.mlab.com:45379/tasksdb", 
     authClientId: process.env["AuthClientId"] || "8c1d5379-eef4-40c4-9cfa-2dc18f809a16",
     authClientSecret: process.env["AuthClientSecret"] || "Ut07VG/v128P5K2hX75dalo3b4+YaLtOWVbSPNe7los=",
     notificationUrl_LSDocs : process.env["NotificationsUrlLSDocs"] || "https://taskmanagertest.azurewebsites.net/_api/sharepoint/webhook",

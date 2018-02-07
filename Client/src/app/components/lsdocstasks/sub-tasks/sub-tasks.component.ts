@@ -81,7 +81,7 @@ export class LSDocsSubTasks implements OnInit {
         this.generalService.getCurrentUser().then(user => {
             this.user = user;
         })
-        this.generalService.httpGet(`${this.generalService.serverAPIUrl}/_api/Users?select=_id,Name`).then(users => {
+        this.getUsers().then(users => {
             this.users = users;
         });
         this.subscriptions.push(this.eventEmitter.onTaskInfoOpen.subscribe((task) => {
@@ -106,11 +106,21 @@ export class LSDocsSubTasks implements OnInit {
         })
     }
 
-    private getAvatar(email : string, dest_img : string ) : Promise<any> {
-        dest_img = "/src/img/logo.png";
+    private getAvatar(email : string, dest_img : any, key : string ) : Promise<any> {
+        dest_img[key] = "/src/img/logo.png";
         return this.generalService.httpGet(`${this.generalService.serverAPIUrl}/_api/Users?select=Email,_id,Company&filter={"Email" :"${email}"}`)
             .then((res) => {
-                res[0] && res[0]._id && ( dest_img = `/src/img/avatars/${ res[0].Company._docId }/${ res[0]._id }.jpeg` );
+                res[0] && res[0]._id && ( dest_img[key] = `/src/img/avatars/${ res[0].Company._docId }/${ res[0]._id }.jpeg` );
+            })
+    }
+
+    private getUsers() : Promise<any> {
+        return this.generalService.httpGet(`${this.config.serverAPIUrl}/_api/lsdocs/users`)
+            .then(items => {
+                return items;
+            })
+            .catch(error => {
+                console.error('<Get Users> error:',error);
             })
     }
 
@@ -124,8 +134,8 @@ export class LSDocsSubTasks implements OnInit {
                     item.DueDate_view = this.datePipe.transform(item.TaskDueDate,"EE, dd MMMM");
                     item.assignedToAvatarUrl = '';
                     item.authorAvatarUrl = '';
-                    this.getAvatar(item.AssignedTo.EMail,item.assignedToAvatarUrl)
-                    this.getAvatar(item.TaskAuthore.EMail,item.authorAvatarUrl)
+                    this.getAvatar(item.AssignedTo.EMail,item,'assignedToAvatarUrl');
+                    this.getAvatar(item.TaskAuthore.EMail,item,'authorAvatarUrl');
                     return item;
                 });
             })
@@ -134,7 +144,7 @@ export class LSDocsSubTasks implements OnInit {
             })
     }
 
-    public addNewSubTask() : any {
+    public addNewSubTask($event) : any {
         let user;
         if( !(this.newTaskAssignedTo && this.newTaskAssignedTo.trim().length > 0 ) )
             return false;
@@ -144,46 +154,126 @@ export class LSDocsSubTasks implements OnInit {
             return false;
 
         this.users.map(item=>{
-            if(item.Name == this.newTaskAssignedTo)
+            if(item.User1.Title == this.newTaskAssignedTo)
                 user = item;
         })
 
         if( !user )
             return false;
 
-        this.createSubTask()
+        user.assignTo = {
+            Title : user.User1.Title,
+            EMail : user.User1.EMail,
+            Id : user.User1.Id
+        }
+
+        if ((user.AbsenceStart) || (user.AbsenceEnd)){
+            var isDeputyUse = ( ( (new Date(Date.now())) >= (new Date(user.AbsenceStart.split('.').reverse().join('.'))) ) && ( (new Date(Date.now())) <= (new Date(user.AbsenceEnd.split('.').reverse().join('.'))) ) ) ? true : false; 
+            if(isDeputyUse && user.Deputy && user.Deputy.EMail) {
+                user.assignTo.Title = user.Deputy.Title;
+                user.assignTo.EMail = user.Deputy.EMail;
+                user.assignTo.Id = user.Deputy.Id;
+            }
+        }
+
+        let TaskData = {
+            task : {
+              '__metadata':{
+                type : "SP.Data.LSTasksListItem"
+              },
+              sysIDItem: this.task.sysIDItem,
+              sysIDList: this.task.sysIDList,
+              sysIDMainTask : (this.contentType == 'LSTaskResolution' ? 0 : (this.task.sysIDMainTask == 0 ? this.task.Id : this.task.sysIDMainTask)).toString(),
+              sysIDParentMainTask: (this.contentType == 'LSTaskResolution' ? '0' : (this.task.Id).toString() ),
+              Title: this.newTaskTitle.trim().replace(':', ' '),      
+              StateID: this.task.StateID,
+              sysTaskLevel: (parseInt(this.task.sysTaskLevel || '0') +1 ).toString(),
+              TaskDescription: null,
+              TaskDueDate: this.datePipe.transform(this.newTaskDueDate,'yyyy-MM-ddTHH:mm:ss').toString() +'Z',
+              EstimatePlan: null,
+              TaskAuthoreId: this.task.AssignedToId,
+              TaskAuthorEmail: this.user.Email,
+              AssignetToTitle: user.assignTo.Title,
+              AssignetToEmail: user.assignTo.EMail,
+              AssignedToId : user.assignTo.Id,
+              AssignedManagerId : user.UserManager.Id,
+              DepartmentOfUser : user.ol_Department,
+              OData__Status : 'Not Started',
+            },
+            
+            itemData : {
+              ItemId: this.task.sysIDItem,
+              ListID: this.task.sysIDList,
+              ItemTitle: "-", 
+              ListTitle: "-", 
+              EventType: 'Task'
+            },
+            
+            HistoryArray : [{
+              EventType :  (this.contentType != 'LSTaskResolution' ? 'EventCreateTask EventAddTask' : 'EventCreateTask'),
+              Event: this.loc.LSDocs.Alert68,
+              NameExecutor : user.assignTo.Title,
+              NameAuthore : this.task.AssignedTo.Title,
+              TaskTitle : this.newTaskTitle.trim(),
+              StartDate :  this.datePipe.transform(Date.now(),'dd.MM.yyyy HH:mm:ss'),
+              DueDate: this.newTaskDueDate.toLocaleDateString(),
+              EvanteDate: this.datePipe.transform(Date.now(),'yyyy-MM-dd HH:mm:ss'),
+              Comments: '',
+              ExecutorEmail: user.assignTo.EMail,
+              AthoreEmail: this.user.Email,
+              ItemId: this.task.sysIDItem,
+              ListID: this.task.sysIDList
+            }]
+        }
+        $event.target.parentNode.disabled = true;
+        this.createSubTask(TaskData)
             .then(()=>{
                 this.revealedForm = false;
-                this.SubTasks.push({
+                let newTask = {
                     Title : this.newTaskTitle,
                     AssignedTo :  {
-                        EMail : user.Name,
-                        Title : user.Name
+                        EMail : user.assignTo.EMail,
+                        Title : user.assignTo.Title
                     },
                     TaskAuthore : {
                         EMail : this.user.Email,
                         Title : this.user.Name
                     },
-                    assignedToAvatarUrl : '/src/img/avatars/5a3bb56815434f13388f5f43/5a3bb5c015434f13388f5f55.jpeg',
-                    authorAvatarUrl : '/src/img/avatars/5a3bb56815434f13388f5f43/5a3bb5c015434f13388f5f55.jpeg',
+                    assignedToAvatarUrl : '',
+                    authorAvatarUrl : '',
                     DueDate_view : this.datePipe.transform(this.newTaskDueDate,"EE, dd MMMM")
-                });
+                }
+
+                this.getAvatar(newTask.AssignedTo.EMail,newTask,'assignedToAvatarUrl');
+                this.getAvatar(newTask.TaskAuthore.EMail,newTask,'authorAvatarUrl');
                 
+                this.SubTasks.push(newTask);
+
                 this.newTaskTitle = '';
                 this.newTaskDueDate = null;
                 this.newTaskAssignedTo = '';
-                
+                $event.target.parentNode.disabled = false;
                 this.generalService.showNotification(`<p>${this.loc.Tasks[this.contentType == "LSTaskResolution" ? 'NewResolution' : 'NewTask']} ${this.loc.Tasks.successAdded}</p>`, 3000);
+            })
+            .catch(error => {
+                console.error('<Set Subtasks> error:',error);
+                $event.target.parentNode.disabled = false;
+                this.generalService.showNotification(`<p>${this.loc.Error} => "${this.loc.Tasks[this.contentType == "LSTaskResolution" ? 'NewResolution' : 'NewTask']}"</p>`, 6000);
             })
     }
 
-    private createSubTask() : Promise<any> {
-        return Promise.resolve();
+    private createSubTask( newTask : any ) : Promise<any> {
+        return this.generalService.httpUpdate(`${this.config.serverAPIUrl}/_api/lsdocs/subtasks/${this.contentType}`,newTask)
+            .then(items => {
+                console.log('resp:',items);
+                if(items && items.hasOwnProperty('ok') && items.ok == false)
+                    throw new Error('Subtask not added')
+            })
     }
     
     onPeoplepickerValueChange() {
         if ((this.newTaskAssignedTo != null)&&(this.newTaskAssignedTo.length > 0)) {
-            this.filteredUsers = this.users.filter(user => user.Name.toLowerCase().indexOf(this.newTaskAssignedTo.toLowerCase()) === 0);
+            this.filteredUsers = this.users.filter(user => user.User1.Title.toLowerCase().indexOf(this.newTaskAssignedTo.toLowerCase()) === 0);
         } else {
             this.filteredUsers = [];
         }
@@ -191,7 +281,7 @@ export class LSDocsSubTasks implements OnInit {
 
     validatePeoplepicker (event, editTaskForm) {
         if ((this.newTaskAssignedTo != null)&&(this.newTaskAssignedTo.length > 0)) {
-            if (this.users.filter(user => user.Name == this.newTaskAssignedTo).length != 1) {
+            if (this.users.filter(user => user.User1.Title == this.newTaskAssignedTo).length != 1) {
                 editTaskForm.form.controls.AssignedTo.setErrors({'incorrect': true});
             }
         } else {
