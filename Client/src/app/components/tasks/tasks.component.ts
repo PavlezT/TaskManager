@@ -75,33 +75,34 @@ export class TasksComponent implements OnInit, OnDestroy {
     }
 
     updateView () {
+        this.items = [];
         let requestUrl: string;
         if (this.mode != null) {
             if (this.mode == 'my') { 
-                requestUrl = `${this.generalService.serverAPIUrl}/_api/Tasks?filter={"AssignedTo._docId":"${this.user["_id"]}","Status":{"$ne":"${this.config.tasksStatuses.done}"}}&expand=ExternalDoc&orderby=Created desc`;
+                requestUrl = `${this.generalService.serverAPIUrl}/_api/Tasks?filter={"AssignedTo._docId":"${this.user["_id"]}","Status":{"$ne":"${this.config.tasksStatuses.done}"}}&top=1000&orderby=Created desc`;//&expand=ExternalDoc
                 this.tasksSidebarOpened = false;
             } else if (this.mode == 'important') {
-                requestUrl = `${this.generalService.serverAPIUrl}/_api/Tasks?filter={"AssignedTo._docId":"${this.user["_id"]}","Status":{"$ne":"${this.config.tasksStatuses.done}"},"IsImportant":true}&expand=ExternalDoc&orderby=Created desc`;
+                requestUrl = `${this.generalService.serverAPIUrl}/_api/Tasks?filter={"AssignedTo._docId":"${this.user["_id"]}","Status":{"$ne":"${this.config.tasksStatuses.done}"},"IsImportant":true}&top=1000&orderby=Created desc`;
                 this.tasksSidebarOpened = false;
             } else if (this.mode == 'today') {
-                requestUrl = `${this.generalService.serverAPIUrl}/_api/Tasks?filter={"AssignedTo._docId":"${this.user["_id"]}","Status":{"$ne":"${this.config.tasksStatuses.done}"},"DueDate":{"$regex":"${(new Date()).toISOString().split('T')[0]}"}}&expand=ExternalDoc&orderby=Created desc`;
+                requestUrl = `${this.generalService.serverAPIUrl}/_api/Tasks?filter={"AssignedTo._docId":"${this.user["_id"]}","Status":{"$ne":"${this.config.tasksStatuses.done}"},"DueDate":{"$regex":"${(new Date()).toISOString().split('T')[0]}"}}&orderby=Created desc`;
                 this.tasksSidebarOpened = false;
             } else if (this.mode == 'new') {
-                requestUrl = `${this.generalService.serverAPIUrl}/_api/Tasks?filter={"AssignedTo._docId":"${this.user["_id"]}","Status":{"$ne":"${this.config.tasksStatuses.done}"},"Created":{"$regex":"${(new Date()).toISOString().split('T')[0]}"}}&expand=ExternalDoc&orderby=Created desc`;
+                requestUrl = `${this.generalService.serverAPIUrl}/_api/Tasks?filter={"AssignedTo._docId":"${this.user["_id"]}","Status":{"$ne":"${this.config.tasksStatuses.done}"},"Created":{"$regex":"${(new Date()).toISOString().split('T')[0]}"}}&orderby=Created desc`;
                 this.tasksSidebarOpened = false;
             } else if (this.mode == 'outgoing') {
-                requestUrl = `${this.generalService.serverAPIUrl}/_api/Tasks?filter={"Author._docId":"${this.user["_id"]}","Status":{"$ne":"${this.config.tasksStatuses.done}"}}&expand=ExternalDoc&orderby=Created desc`;
+                requestUrl = `${this.generalService.serverAPIUrl}/_api/Tasks?filter={"Author._docId":"${this.user["_id"]}","Status":{"$ne":"${this.config.tasksStatuses.done}"}}&top=1000&orderby=Created desc`;
                 this.tasksSidebarOpened = false;
             } else if (this.mode == 'create') {
-                requestUrl = `${this.generalService.serverAPIUrl}/_api/Tasks?filter={"AssignedTo._docId":"${this.user["_id"]}","Status":{"$ne":"${this.config.tasksStatuses.done}"}}&expand=ExternalDoc&orderby=Created desc`;
+                requestUrl = `${this.generalService.serverAPIUrl}/_api/Tasks?filter={"AssignedTo._docId":"${this.user["_id"]}","Status":{"$ne":"${this.config.tasksStatuses.done}"}}&orderby=Created desc`;
                 this.tasksSidebarOpened = true;
                 this.tasksSidebarType = 'create';
             } else {
-                requestUrl = `${this.generalService.serverAPIUrl}/_api/Tasks?filter={"Author._docId":"${this.user["_id"]}","Status":{"$ne":"${this.config.tasksStatuses.done}"},"Category": "${this.mode}"}&expand=ExternalDoc&orderby=Created desc`;
+                requestUrl = `${this.generalService.serverAPIUrl}/_api/Tasks?filter={"Author._docId":"${this.user["_id"]}","Status":{"$ne":"${this.config.tasksStatuses.done}"},"Category": "${this.mode}"}&orderby=Created desc`;
                 this.tasksSidebarOpened = false;
             }
         } else if (this.userTaskCategoryId != null) {
-            requestUrl = `${this.generalService.serverAPIUrl}/_api/Tasks?filter={"UserCategories":{"$elemMatch":{"_docId":"${this.userTaskCategoryId}"}},"Status":{"$ne":"${this.config.tasksStatuses.done}"}}&expand=ExternalDoc&orderby=Created desc`;
+            requestUrl = `${this.generalService.serverAPIUrl}/_api/Tasks?filter={"UserCategories":{"$elemMatch":{"_docId":"${this.userTaskCategoryId}"}},"Status":{"$ne":"${this.config.tasksStatuses.done}"}}&top=1000&orderby=Created desc`;
             this.tasksSidebarOpened = false;
         }
         if ((requestUrl != null)&&(requestUrl.length > 0)) {

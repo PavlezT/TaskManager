@@ -76,9 +76,9 @@ export class ConnectedDoc implements OnInit, OnDestroy {
 
     ngOnInit(){
         this.subscriptions.push(this.eventEmitter.onTaskInfoOpen.subscribe((task) => {
-            if(task.Source != this.config.sources.lsdocs || !task.ExternalDoc.props)
+            if(task.Source != this.config.sources.lsdocs || !task.ExternalDoc)
                 return this.ngOnDestroy();
-            this.task = task.ExternalDoc.props;
+            this.task = task;//.ExternalDoc.props;
             this.updateView();
         }));
         this.updateView();
@@ -88,7 +88,11 @@ export class ConnectedDoc implements OnInit, OnDestroy {
         this.Fields = [];
         this.doc = {};
         this.preloaderVisible = 'active';
-        return this.getDoc()
+
+        return this.getExternalTask(this.task.ExternalDoc._docId)
+            .then(()=>{
+                return this.getDoc();
+            })
             .then(res=>{
                 this.doc = res;
                 return this.getFields(res);
@@ -104,6 +108,15 @@ export class ConnectedDoc implements OnInit, OnDestroy {
             .catch(err=>{
                 this.preloaderVisible = "inactive";
                 console.log('<ConnectedDoc> updateView error:',err);
+            })
+    }
+
+    private getExternalTask(taskId : string) : Promise<any> {
+        return this.generalService.httpGet(`${this.generalService.serverAPIUrl}/_api/LSDocsTasks/${taskId}`)
+            .then( task => {
+                if(task && task.hasOwnProperty('ok') && task.ok == false || task.length == 0 )
+                    throw new String('Error load external (lsdocs) task');
+                return this.task = task;
             })
     }
 

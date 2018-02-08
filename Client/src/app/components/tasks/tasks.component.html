@@ -2,8 +2,8 @@
     <mat-sidenav mode="over" align="end" (close)="onTaskSidenavClose()" [opened]="tasksSidebarOpened" [ngClass]="tasksSidebarType">
         <create-task *ngIf="tasksSidebarType == 'create'"></create-task>
         <info-task *ngIf="tasksSidebarType == 'info' && ( !taskInfoViewed.Source ||  taskInfoViewed.Source == config.sources.dynamics365)" [taskId]="taskInfoViewed._id"></info-task>
-        <work-task *ngIf="tasksSidebarType == 'info' && taskInfoViewed.Source == config.sources.lsdocs" [task]="taskInfoViewed.ExternalDoc.props" [toDoneTask]="doneLSDocsTask"></work-task>
-        <connectedDoc *ngIf="tasksSidebarType == 'connectedLSDocsDoc'" [task]="taskInfoViewed.ExternalDoc.props" ></connectedDoc>
+        <work-task *ngIf="tasksSidebarType == 'info' && taskInfoViewed.Source == config.sources.lsdocs" [task]="taskInfoViewed" [toDoneTask]="doneLSDocsTask"></work-task>
+        <connectedDoc *ngIf="tasksSidebarType == 'connectedLSDocsDoc'" [task]="taskInfoViewed" ></connectedDoc>
     </mat-sidenav>
     <div class="component-container">
         <quick-create-task></quick-create-task>

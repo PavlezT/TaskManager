@@ -7,11 +7,31 @@ import { TranslateService } from 'ng2-translate';
 import { APP_CONFIG } from '../../../app.config';
 import { IAppConfig } from '../../../iapp.config.interface';
 import { Subscription } from 'rxjs/Subscription';
+import {
+    trigger,
+    state,
+    style,
+    animate,
+    transition
+  } from '@angular/animations';
 
 @Component({
     selector: 'work-task',
     templateUrl: 'work-task.component.html',
-    styleUrls: ['work-task.component.css']
+    styleUrls: ['work-task.component.css'],
+    animations : [
+        trigger('preloaderState', [
+          state('inactive', style({
+            opacity: '0',
+            visibility: 'hidden'
+          })),
+          state('active',   style({
+            opacity: '1',
+            visibility: 'visible'
+          })),
+          transition('* => *', animate('0ms ease-out')),
+        ])
+      ]
 })
 
 export class WorkLSDocsComponent implements OnInit {
@@ -19,6 +39,7 @@ export class WorkLSDocsComponent implements OnInit {
     @Input() task: any;
     @Input() toDoneTask : Function;
 
+    preloaderVisible : string;
     authorAvatarUrl : string;
     assignedToAvatarUrl : string;
     subscriptions: Array<Subscription>;
@@ -26,6 +47,7 @@ export class WorkLSDocsComponent implements OnInit {
     user: any;
     userRole: string;
     comment : string;
+    loc : any;
     
     constructor (
         public generalService: GeneralService, 
@@ -38,6 +60,7 @@ export class WorkLSDocsComponent implements OnInit {
         this.user = null;        
         this.userRole = null; //assignedTo';
         this.comment = "";
+        this.preloaderVisible = 'inactive';
     }
 
     ngOnInit () {
@@ -46,14 +69,39 @@ export class WorkLSDocsComponent implements OnInit {
         })
         this.subscriptions.push(this.eventEmitter.onTaskInfoOpen.subscribe((task) => {
             this.comment = '';
-        
-            if(task.Source != this.config.sources.lsdocs || !task.ExternalDoc.props){
+            
+            if(task.Source != this.config.sources.lsdocs || !task.ExternalDoc){
               return this.ngOnDestroy();
             } 
-            this.task = task.ExternalDoc.props;
-            this.getAvatars(this.task.TaskAuthore.EMail,this.task.AssignedTo.EMail);
+            this.task = task;//.ExternalDoc.props;
+            this.updateView();
         }));
-        this.getAvatars(this.task.TaskAuthore.EMail,this.task.AssignedTo.EMail);
+        this.translate.getTranslation(this.translate.currentLang).toPromise().then(loc => this.loc = loc);
+        this.updateView();
+    }
+
+    public updateView() : Promise<any> {
+        this.preloaderVisible = 'active';
+        return this.getExternalTask(this.task.ExternalDoc._docId)
+            .then(()=>{
+                this.preloaderVisible = 'inactive';
+                return this.getAvatars(this.task.TaskAuthore.EMail,this.task.AssignedTo.EMail);
+            })
+            .catch((error)=>{
+                console.log('<LSDocs work task> error:',error)
+                this.preloaderVisible = 'inactive';
+                this.eventEmitter.updateTasks.emit(); 
+                this.generalService.showNotification(`<p>${this.loc.Error}</p>`, 3000);
+            })
+    }
+
+    private getExternalTask(taskId : string) : Promise<any> {
+        return this.generalService.httpGet(`${this.generalService.serverAPIUrl}/_api/LSDocsTasks/${taskId}`)
+            .then( task => {
+                if(task && task.hasOwnProperty('ok') && task.ok == false || task.length == 0 )
+                    throw new String('Error load external (lsdocs) task');
+                return this.task = task;
+            })
     }
 
     private getAvatars(authoreEmail : string, assignedToEmail : string) : Promise<any> {
